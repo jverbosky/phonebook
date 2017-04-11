@@ -1,0 +1,58 @@
+<div>
+
+  <h4>Please enter the requested details and click <b>Submit</b>:</h4>
+
+  <div class = "padding">
+    <form  method = "post" action = "post_entry">
+      <table>
+        <tr>
+          <td class= "wide"><b>First Name: </b></td>
+          <td class= "wide"><input type = "text" name = "entry[fname]" value = "<%= entry_hash["fname"] %>" required></td>
+        </tr>
+        <tr>
+          <td class= "wide"><b>Last Name: </b></td>
+          <td class= "wide"><input type = "text" name = "entry[lname]" value = "<%= entry_hash["lname"] %>" required></td>
+        </tr>
+        <tr>
+          <td class= "wide"><b>Street Address: </b></td>
+          <td class= "wide"><input type = "text" name = "entry[addr]" value = "<%= entry_hash["addr"] %>" required></td>
+        </tr>
+        <tr>
+          <td class= "wide"><b>City: </b></td>
+          <td class= "wide"><input type = "text" name = "entry[city]" value = "<%= entry_hash["city"] %>" required></td>
+        </tr>
+        <tr>
+          <td class= "wide"><b>State Abbreviation: </b></td>
+          <td class= "wide"><input type = "text" name = "entry[state]" value = "<%= entry_hash["state"] %>" required></td>
+        </tr>
+        <tr>
+          <td class= "wide"><b>Zip Code: </b></td>
+          <td class= "wide"><input type = "text" name = "entry[zip]" value = "<%= entry_hash["zip"] %>" required></td>
+        </tr>
+        <tr>
+          <td class= "wide"><b>Mobile Phone Number: </b></td>
+          <td class= "wide"><input type = "text" name = "entry[mobile]" value = "<%= entry_hash["mobile"] %>" required></td>
+        </tr>
+        <tr>
+          <td class= "wide"><b>Home Phone Number: </b></td>
+          <td class= "wide"><input type = "text" name = "entry[home]" value = "<%= entry_hash["home"] %>" required></td>
+        </tr>
+        <tr>
+          <td class= "wide"><b>Work Phone Number: </b></td>
+          <td class= "wide"><input type = "text" name = "entry[work]" value = "<%= entry_hash["work"] %>" required></td>
+        </tr>
+      </table>
+      <div class = "button">
+        <input class="button-color" type = "submit">
+      </div>
+    </form>
+  </div>
+
+  <hr>
+
+  <!-- only populated if data validation issues -->
+  <div class="feedback">
+    <p><i><%= feedback %></i></p>
+  </div>
+
+</div>

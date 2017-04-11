@@ -19,14 +19,15 @@ def open_db()
   end
 end
 
-# Method to return entry hash from PostgreSQL db for specified first name
-def get_entry(first_name)
+# Method to return entry hash from PostgreSQL db for specified name
+def get_entry(first_name, last_name)
   begin
     conn = open_db()
     conn.prepare('q_statement',
                  "select *
                   from listings
-                  where listings.fname = '#{first_name}'")
+                  where fname = '#{first_name}'
+                  and lname = '#{last_name}'")
     user_hash = conn.exec_prepared('q_statement')
     conn.exec("deallocate q_statement")
     return user_hash[0]

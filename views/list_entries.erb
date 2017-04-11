@@ -10,9 +10,12 @@
       <% names.each_slice(3).to_a.each do |group| %>
         <tr>
         <% group.each do |person| %>
-          <% person.include? " " ? name = person.gsub(" ", "%20") : name = person %>
-          <% url = "/user_info?name=" + name %>
-          <td class="narrow"><a href=<%= url %>><%= person %></a></td>
+          <% lname = person.split(/,/).first %>
+          <% fname = person.split(/ /).last %>
+          <% unless fname == nil %>
+            <% url = "/entry_info?fname=" + fname + "&lname=" + lname %>
+          <% end %>
+          <td class="wide"><a href=<%= url %>><%= person %></a></td>
         <% end %>
         </tr>
       <% end %>

@@ -1,0 +1,65 @@
+<div>
+
+<% m_format = "(" + entry_hash["mobile"][0, 3] + ") " + entry_hash["mobile"][3, 3] + "-" + entry_hash["mobile"][6, 4] %>
+<% h_format = "(" + entry_hash["home"][0, 3] + ") " + entry_hash["home"][3, 3] + "-" + entry_hash["home"][6, 4] %>
+<% w_format = "(" + entry_hash["work"][0, 3] + ") " + entry_hash["work"][3, 3] + "-" + entry_hash["work"][6, 4] %>
+
+  <div>
+    <h4>Here are the details for <%= entry_hash["fname"] %> <%= entry_hash["lname"] %>:</h4>
+  </div>
+
+  <div class="padding">
+    <table>
+      <tr>
+        <td class="wide"><b>First Name: </b></td>
+        <td class="wide"><%= entry_hash["fname"] %></td>
+      </tr>
+      <tr>
+        <td class="wide"><b>Last Name: </b></td>
+        <td class="wide"><%= entry_hash["lname"] %></td>
+      </tr>
+      <tr>
+        <td class="wide"><b>Street Address: </b></td>
+        <td class="wide"><%= entry_hash["addr"] %></td>
+      </tr>
+      <tr>
+        <td class="wide"><b>City: </b></td>
+        <td class="wide"><%= entry_hash["city"] %></td>
+      </tr>
+      <tr>
+        <td class="wide"><b>State: </b></td>
+        <td class="wide"><%= entry_hash["state"] %></td>
+      </tr>
+      <tr>
+        <td class="wide"><b>Zip Code: </b></td>
+        <td class="wide"><%= entry_hash["zip"] %></td>
+      </tr>
+      <tr>
+        <td class="wide"><b>Mobile: </b></td>
+        <td class="wide"><%= m_format %></td>
+      </tr>
+      <tr>
+        <td class="wide"><b>Home: </b></td>
+        <td class="wide"><%= h_format %></td>
+      </tr>
+      <tr>
+        <td class="wide"><b>Work: </b></td>
+        <td class="wide"><%= w_format %></td>
+      </tr>
+    </table>
+  </div>
+
+  <hr>
+
+  <div>
+    <h4>What would you like to do next?</h4>
+    <div class="padding">
+      <p><a href = "/get_entry">Create a new phonebook entry</a></p>
+      <p><a href = "/list_entries">View an existing phonebook entry</a></p>
+      <p><a href = "/get_search">Update an existing phonebook entry</a></p>
+    </div>
+  </div>
+
+  <hr>
+
+</div>
