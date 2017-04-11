@@ -7,15 +7,15 @@ begin
 
   # user data sets
   entry_1 = ["John", "Doe", "606 Jacobs Street", "Pittsburgh", "PA", 15220, 4125550125, 4125559816, 4125550106]
-  entry_2 = ["Jane", "Smith", "3974 Riverside Drive", "Pittsburgh", "PA", 15201, 8785550101, 8785557000, 4125550197]
-  entry_3 = ["Jim", "Fairbanks", "3801 Beechwood Drive", "Pittsburgh", "", 15205, 4125550167, 4125553878, 7245550133]
-  entry_4 = ["Jill", "Doe", "2294 Washington Avenue", "Pittsburgh", "PA", 15201, 7245550136, 7245551953, 4125550150]
-  entry_5 = ["June", "Smith", "3210 Stiles Street", "Pittsburgh", "PA", 15201, 4125550163, 4125557989, 4125550198]
+  entry_2 = ["Jane", "Smith", "3974 Riverside Drive", "Monroeville", "PA", 15146, 8785550101, 8785557000, 4125550197]
+  entry_3 = ["Jim", "Fairbanks", "3801 Beechwood Drive", "Wexford", "PA", 15090, 4125550167, 4125553878, 7245550133]
+  entry_4 = ["Jill", "Doe", "2294 Washington Avenue", "Sewickley", "PA", 15143, 7245550136, 7245551953, 4125550150]
+  entry_5 = ["June", "Smith", "3210 Stiles Street", "Imperial", "PA", 15126, 4125550163, 4125557989, 4125550198]
   entry_6 = ["Jen", "Doe", "3261 Michigan Avenue", "Pittsburgh", "PA", 15222, 7245550190, 7245550624, 7245550146]
-  entry_7 = ["Jeff", "Langer", "2731 Platinum Drive", "Pittsburgh", "PA", 15213, 8785550195, 8785556851, 4125550172]
+  entry_7 = ["Jeff", "Langer", "2731 Platinum Drive", "Monroeville", "PA", 15140, 8785550195, 8785556851, 4125550172]
   entry_8 = ["Jack", "Scott", "4168 University Drive", "Pittsburgh", "PA", 15201, 4125550107, 4125552529, 4125550113]
-  entry_9 = ["Joe", "Doe", "2391 Losh Lane", "Pittsburgh", "PA", 15222, 4125550184, 4125554784, 4125550166]
-  entry_10 = ["Joy", "Smith", "879 Shinn Avenue", "Pittsburgh", "PA", 15201, 7245550195, 7245551579, 4125550131]
+  entry_9 = ["Joe", "Doe", "2391 Losh Lane", "Monroeville", "PA", 15146, 4125550184, 4125554784, 4125550166]
+  entry_10 = ["Joy", "Smith", "879 Shinn Avenue", "Imperial", "PA", 15071, 7245550195, 7245551579, 4125550131]
 
   # aggregate entry data into multi-dimensional array for iteration
   phonebook = []

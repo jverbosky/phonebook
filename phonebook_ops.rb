@@ -68,32 +68,32 @@ def get_names()
   end
 end
 
-# # Method to determine if value is too long or if user in current user hash is already in JSON file
-# def check_values(user_hash)
-#   flag = 0
-#   feedback = ""
-#   detail = ""
-#   user_hash.each do |key, value|
-#     flag = 2 if key == "age" && value.to_i > 120
-#     (flag = 3; detail = key) if key !~ /quote/ && value.length > 20
-#     flag = 4 if key == "quote" && value.length > 80
-#     flag = 5 if key == "name" && value =~ /[^a-zA-Z ]/
-#     (flag = 6; detail = key) if key =~ /age|n1|n2|n3/ && value =~ /[^0-9.,]/
-#   end
-#   # users = get_names()
-#   # users.each { |user| flag = 1 if user == user_hash["name"]}
-#   flag = 7 if validate_file(user_hash) == false
-#   case flag
-#     # when 1 then feedback = "We already have details for that person - please enter a different person."
-#     when 2 then feedback = "I don't think you're really that old - please try again."
-#     when 3 then feedback = "The value for '#{detail}' is too long - please try again with a shorter value."
-#     when 4 then feedback = "Your quote is too long - please try again with a shorter value."
-#     when 5 then feedback = "Your name should only contain letters - please try again."
-#     when 6 then feedback = "The value for '#{detail}' should only have numbers - please try again."
-#     when 7 then feedback = "Invalid image file - please upload a valid image in BMP, GIF, JPG, PNG or TIFF format."
-#   end
-#   return feedback
-# end
+# Method to determine if value is too long or if user in current user hash is already in JSON file
+def check_values(user_hash)
+  flag = 0
+  feedback = ""
+  detail = ""
+  user_hash.each do |key, value|
+    flag = 2 if key == "age" && value.to_i > 120
+    (flag = 3; detail = key) if key !~ /quote/ && value.length > 20
+    flag = 4 if key == "quote" && value.length > 80
+    flag = 5 if key == "name" && value =~ /[^a-zA-Z ]/
+    (flag = 6; detail = key) if key =~ /age|n1|n2|n3/ && value =~ /[^0-9.,]/
+  end
+  # users = get_names()
+  # users.each { |user| flag = 1 if user == user_hash["name"]}
+  flag = 7 if validate_file(user_hash) == false
+  case flag
+    # when 1 then feedback = "We already have details for that person - please enter a different person."
+    when 2 then feedback = "I don't think you're really that old - please try again."
+    when 3 then feedback = "The value for '#{detail}' is too long - please try again with a shorter value."
+    when 4 then feedback = "Your quote is too long - please try again with a shorter value."
+    when 5 then feedback = "Your name should only contain letters - please try again."
+    when 6 then feedback = "The value for '#{detail}' should only have numbers - please try again."
+    when 7 then feedback = "Invalid image file - please upload a valid image in BMP, GIF, JPG, PNG or TIFF format."
+  end
+  return feedback
+end
 
 # Method to add current user hash to db
 def write_db(entry_hash)
@@ -126,7 +126,7 @@ end
 # Method to identify which column contains specified value
 def match_column(value)
   begin
-    columns = ["fname", "lname"]
+    columns = ["fname", "lname", "city"]
     target = ""
     conn = open_db() # open database for updating
     columns.each do |column|  # determine which column contains the specified value
@@ -157,7 +157,7 @@ def pull_records(value)
       query = "select *
                from listings
                where " + column + " ilike $1
-               order by fname"
+               order by lname, fname"
       conn.prepare('q_statement', query)
       rs = conn.exec_prepared('q_statement', ["%" + value + "%"])
       conn.exec("deallocate q_statement")
@@ -173,31 +173,6 @@ def pull_records(value)
     conn.close if conn
   end
 end
-
-# # Method to identify which table contains the specified column
-# def match_table(column)
-#   begin
-#     tables = ["details", "numbers", "quotes"]
-#     target = ""
-#     conn = open_db() # open database for updating
-#     tables.each do |table|  # determine which table contains the specified column
-#       conn.prepare('q_statement',
-#                    "select column_name
-#                     from information_schema.columns
-#                     where table_name = $1")  # bind parameter
-#       rs = conn.exec_prepared('q_statement', [table])
-#       conn.exec("deallocate q_statement")
-#       columns = rs.values.flatten
-#       target = table if columns.include? column
-#     end
-#     return target
-#   rescue PG::Error => e
-#     puts 'Exception occurred'
-#     puts e.message
-#   ensure
-#     conn.close if conn
-#   end
-# end
 
 # Method to update any number of values in any number of tables
 # - user hash needs to contain id of current record that needs to be updated
@@ -223,7 +198,6 @@ def update_values(entry_hash)
   end
 end
 
-
 #-----------------
 # Sandbox testing
 #-----------------
@@ -237,41 +211,27 @@ end
 
 # hash_1 = {"id"=>"11", "fname"=>"Jake", "lname"=>"Robertson", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
 # hash_1 = {"fname"=>"Jacob", "lname"=>"Robert", "addr"=>"146 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125558888", "home"=>"4125558349", "work"=>"4125556843", "id"=>"11"}
-hash_1 = {"fname"=>"Jake", "lname"=>"Roberts", "id"=>"11", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# hash_1 = {"fname"=>"Jake", "lname"=>"Roberts", "id"=>"11", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
 
-update_values(hash_1)
+# update_values(hash_1)
 
-# p match_column("John")  # "name"
-# p match_column("If you fell down yesterday, stand up today.")  # "quote"
-# p match_column("11")  # "n1"
+# p match_column("John")  # "fname"
+# p match_column("Smith")  # "lname"
+# p match_column("Monroeville")  # "city"
 # p match_column("nothing")  #  ""
 
 # p pull_records("John")
-# [{"id"=>"1", "name"=>"John", "age"=>"41", "details_id"=>"1", "n1"=>"7", "n2"=>"11", "n3"=>"3", "quote"=>"Research is what I'm doing when I don't know what I'm doing."}]
+# [{"id"=>"1", "fname"=>"John", "lname"=>"Doe", "addr"=>"606 Jacobs Street", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15220", "mobile"=>"4125550125", "home"=>"4125559816", "work"=>"4125550106"}]
 
-# p pull_records("If you fell down yesterday, stand up today.")
-# [{"id"=>"6", "name"=>"Jen", "age"=>"91", "details_id"=>"6", "n1"=>"2", "n2"=>"4", "n3"=>"6", "quote"=>"If you fell down yesterday, stand up today."}]
+# p pull_records("Smith")
+# [{"id"=>"2", "fname"=>"Jane", "lname"=>"Smith", "addr"=>"3974 Riverside Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15201", "mobile"=>"8785550101", "home"=>"8785557000", "work"=>"4125550197"},
+#  {"id"=>"10", "fname"=>"Joy", "lname"=>"Smith", "addr"=>"879 Shinn Avenue", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15201", "mobile"=>"7245550195", "home"=>"7245551579", "work"=>"4125550131"},
+#  {"id"=>"5", "fname"=>"June", "lname"=>"Smith", "addr"=>"3210 Stiles Street", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15201", "mobile"=>"4125550163", "home"=>"4125557989", "work"=>"4125550198"}]
 
-# p pull_records("10")
-# [{"id"=>"3", "name"=>"Jim", "age"=>"61", "details_id"=>"3", "n1"=>"10", "n2"=>"20", "n3"=>"30", "quote"=>"In order to succeed, we must first believe that we can."},
-#  {"id"=>"9", "name"=>"Joni", "age"=>"40", "details_id"=>"9", "n1"=>"10", "n2"=>"50", "n3"=>"80", "quote"=>"Think big."}]
+# p pull_records("Monroeville")
+# [{"id"=>"9", "fname"=>"Joe", "lname"=>"Doe", "addr"=>"2391 Losh Lane", "city"=>"Monroeville", "state"=>"PA", "zip"=>"15146", "mobile"=>"4125550184", "home"=>"4125554784", "work"=>"4125550166"},
+#  {"id"=>"7", "fname"=>"Jeff", "lname"=>"Langer", "addr"=>"2731 Platinum Drive", "city"=>"Monroeville", "state"=>"PA", "zip"=>"15140", "mobile"=>"8785550195", "home"=>"8785556851", "work"=>"4125550172"},
+#  {"id"=>"2", "fname"=>"Jane", "lname"=>"Smith", "addr"=>"3974 Riverside Drive", "city"=>"Monroeville", "state"=>"PA", "zip"=>"15146", "mobile"=>"8785550101", "home"=>"8785557000", "work"=>"4125550197"}]
 
 # p pull_records("nothing")
 # [{"quote"=>"No matching record - please try again."}]
-
-# p pull_image("John")  # "images/uploads/1/user_1.png"
-
-# def create_directory()
-#     image_path = "./public/images/uploads/10"
-#     unless File.directory?(image_path)  # create directory for image
-#       FileUtils.mkdir_p(image_path)
-#     end
-# end
-
-# create_directory()
-
-# user_hash = {"name"=>"Luma", "age"=>"4", "n1"=>"1", "n2"=>"2", "n3"=>"3", "quote"=>"Woof!", "image"=>{:filename=>"luma2.png", :type=>"image/png", :name=>"user[image]", :tempfile=>0, :head=>"Content-Disposition: form-data; name=\"user[image]\"; filename=\"luma2.png\"\r\nContent-Type: image/png\r\n"}, "id"=>"8"}
-
-# p get_image_name(user_hash)
-
-# update_values(user_hash)
