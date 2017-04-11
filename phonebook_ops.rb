@@ -206,12 +206,12 @@ def update_values(entry_hash)
   begin
     id = entry_hash["id"]  # determine the id for the current record
     conn = open_db() # open database for updating
-    user_hash.each do |column, value|  # iterate through user_hash for each column/value pair
+    entry_hash.each do |column, value|  # iterate through entry_hash for each column/value pair
       unless column == "id"  # we do NOT want to update the id
         # workaround for column name used as bind parameter
         query = "update listings set " + column + " = $2 where id = $1"
         conn.prepare('q_statement', query)
-        rs = conn.exec_prepared('q_statement', [id])
+        rs = conn.exec_prepared('q_statement', [id, value])
         conn.exec("deallocate q_statement")
       end
     end
@@ -233,15 +233,13 @@ end
 # entry_hash = {"fname"=>"Jake", "lname"=>"Roberts", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
 # write_db(entry_hash)
 
-p get_names()
+# p get_names()
 
 # hash_1 = {"id"=>"11", "fname"=>"Jake", "lname"=>"Robertson", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
-# hash_1 = {"fname"=>"Jake", "lname"=>"Roberts", "id"=>"11", "addr"=>"146 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
-# hash_1 = {"fname"=>"Jake", "lname"=>"Roberts", "addr"=>"146 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125558888", "home"=>"4125558349", "work"=>"4125556843", "id"=>"11"}
+# hash_1 = {"fname"=>"Jacob", "lname"=>"Robert", "addr"=>"146 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125558888", "home"=>"4125558349", "work"=>"4125556843", "id"=>"11"}
+hash_1 = {"fname"=>"Jake", "lname"=>"Roberts", "id"=>"11", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
 
-# update_values(hash_1)
-# update_values(hash_2)
-# update_values(hash_3)
+update_values(hash_1)
 
 # p match_column("John")  # "name"
 # p match_column("If you fell down yesterday, stand up today.")  # "quote"
