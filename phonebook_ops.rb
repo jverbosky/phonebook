@@ -68,29 +68,25 @@ def get_names()
   end
 end
 
-# Method to determine if value is too long or if user in current user hash is already in JSON file
-def check_values(user_hash)
+# Method to validate values prior to committing to database
+def check_values(entry_hash)
   flag = 0
   feedback = ""
   detail = ""
-  user_hash.each do |key, value|
-    flag = 2 if key == "age" && value.to_i > 120
-    (flag = 3; detail = key) if key !~ /quote/ && value.length > 20
-    flag = 4 if key == "quote" && value.length > 80
-    flag = 5 if key == "name" && value =~ /[^a-zA-Z ]/
-    (flag = 6; detail = key) if key =~ /age|n1|n2|n3/ && value =~ /[^0-9.,]/
+  entry_hash.each do |key, value|
+    (flag = 1; detail = key) if key =~ /fname|lname|addr/ && value.length > 50
+    (flag = 1; detail = key) if key == "city" && value.length > 25
+    (flag = 1; detail = key) if key == "zip" && value.length > 5
+    (flag = 1; detail = key) if key =~ /mobile|home|work/ && value.length > 10
+    (flag = 2; detail = key) if key == "state" && value.length > 2
+    flag = 3 if key =~ /fname|lname/ && value =~ /[^a-zA-Z ]/
+    (flag = 4; detail = key) if key =~ /zip|mobile|home|work/ && value =~ /[^0-9.,]/
   end
-  # users = get_names()
-  # users.each { |user| flag = 1 if user == user_hash["name"]}
-  flag = 7 if validate_file(user_hash) == false
   case flag
-    # when 1 then feedback = "We already have details for that person - please enter a different person."
-    when 2 then feedback = "I don't think you're really that old - please try again."
-    when 3 then feedback = "The value for '#{detail}' is too long - please try again with a shorter value."
-    when 4 then feedback = "Your quote is too long - please try again with a shorter value."
-    when 5 then feedback = "Your name should only contain letters - please try again."
-    when 6 then feedback = "The value for '#{detail}' should only have numbers - please try again."
-    when 7 then feedback = "Invalid image file - please upload a valid image in BMP, GIF, JPG, PNG or TIFF format."
+    when 1 then feedback = "The value for '#{detail}' is too long - please try again with a shorter value."
+    when 2 then feedback = "Please use the two-letter abbreviation for the state name."
+    when 3 then feedback = "Your name should only contain letters - please try again."
+    when 4 then feedback = "The value for '#{detail}' should only have numbers - please try again."
   end
   return feedback
 end
@@ -235,3 +231,49 @@ end
 
 # p pull_records("nothing")
 # [{"quote"=>"No matching record - please try again."}]
+
+# First name too long (50+)
+hash_2 = {"id"=>"11", "fname"=>"Jakeasdfasdfoiuyasdfoiuyasdfiouyasdfoiuyasdfiouyasdfoiuyasdfoiuyasdfoiuy", "lname"=>"Robertson", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# "The value for 'fname' is too long - please try again with a shorter value."
+
+# Last name too long (50+)
+hash_3 = {"id"=>"11", "fname"=>"Jake", "lname"=>"Robertsonasdfoiuyasdfoiuyasdfoiuyasdfoiuyasdfoiuyasdfoiasdfpoiu", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# "The value for 'lname' is too long - please try again with a shorter value."
+
+# Address too long (50+)
+hash_4 = {"id"=>"11", "fname"=>"Jake", "lname"=>"Robertson", "addr"=>"328 Oakdale Driveasdfoiuyasdfoiuyasdfoiuyasdfoiuyasdfoiuyasdfoiuyasdfoiuy", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# "The value for 'addr' is too long - please try again with a shorter value."
+
+# City too long (25+)
+hash_5 = {"id"=>"11", "fname"=>"Jake", "lname"=>"Robertson", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburghasdfoiuyasdfoiuyasdfoiuyasdfoiuyasdfoiuyasdfoiuyasdfoiuyasdfoiuy", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# "The value for 'city' is too long - please try again with a shorter value."
+
+# State too long (2+)
+hash_6 = {"id"=>"11", "fname"=>"Jake", "lname"=>"Robertson", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"Pennsylvania", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# "Please use the two-letter abbreviation for the state name."
+
+# Zip too long (5+)
+hash_7 = {"id"=>"11", "fname"=>"Jake", "lname"=>"Robertson", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"152136", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# "The value for 'zip' is too long - please try again with a shorter value."
+
+# Mobile too long (10+)
+hash_8 = {"id"=>"11", "fname"=>"Jake", "lname"=>"Robertson", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"41255573590", "home"=>"4125558349", "work"=>"4125556843"}
+# "The value for 'mobile' is too long - please try again with a shorter value."
+
+# Non-letters in first name
+hash_9 = {"id"=>"11", "fname"=>"Jake2", "lname"=>"Robertson", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# "Your name should only contain letters - please try again."
+
+# Non-numbers in mobile
+hash_10 = {"id"=>"11", "fname"=>"Jake", "lname"=>"Robertson", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"412-555-7359", "home"=>"4125558349", "work"=>"4125556843"}
+# "The value for 'mobile' should only have numbers - please try again."
+
+p check_values(hash_2)
+p check_values(hash_3)
+p check_values(hash_4)
+p check_values(hash_5)
+p check_values(hash_6)
+p check_values(hash_7)
+p check_values(hash_8)
+p check_values(hash_9)
+p check_values(hash_10)

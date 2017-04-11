@@ -25,7 +25,7 @@ begin
              lname varchar(50),
              addr varchar(50),
              city varchar(25),
-             state varchar(20),
+             state varchar(2),
              zip smallint,
              mobile bigint,
              home bigint,
