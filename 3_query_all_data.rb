@@ -3,7 +3,8 @@
 require 'pg'
 load "./local_env.rb" if File.exists?("./local_env.rb")
 
-def get_data(first_name)
+# def get_data(first_name) # results for one entry
+def get_data()  # results for all entries
 
   begin
 
@@ -20,11 +21,16 @@ def get_data(first_name)
     # reference - example query to return all column names from listings table
     # select column_name from information_schema.columns where table_name='listings'
 
-    # prepare SQL statement
+    # # prepare SQL statement for retrieving data for one entry
+    # conn.prepare('q_statement',
+    #              "select *
+    #               from listings
+    #               where fname = '#{first_name}'")
+
+    # prepare SQL statement for retrieving data for all entries
     conn.prepare('q_statement',
                  "select *
-                  from listings
-                  where fname = '#{first_name}'")
+                  from listings")
 
     # execute prepared SQL statement
     rs = conn.exec_prepared('q_statement')
@@ -32,23 +38,27 @@ def get_data(first_name)
     # deallocate prepared statement variable (avoid error "prepared statement already exists")
     conn.exec("deallocate q_statement")
 
-    return rs[0]
+    # return rs[0]
 
-    # # iterate through each row for user data and image
-    # rs.each do |row|
+    # iterate through each row for user data and image
+    rs.each do |row|
 
-    #   # output user data to console
-    #   puts "First Name: #{row['fname']}"
-    #   puts "Last Name: #{row['lname']}"
-    #   puts "Address: #{row['addr']}"
-    #   puts "City: #{row['city']}"
-    #   puts "State: #{row['state']}"
-    #   puts "Zip Code: #{row['zip']}"
-    #   puts "Mobile: #{row['mobile']}"
-    #   puts "Home: #{row['home']}"
-    #   puts "Work: #{row['work']}"
+      if row.key ~= 'mobile'|'home'|'work'
 
-    # end
+      # output user data to console
+      puts "Entry Number #{row['id']}"
+      puts "First Name: #{row['fname']}"
+      puts "Last Name: #{row['lname']}"
+      puts "Address: #{row['addr']}"
+      puts "City: #{row['city']}"
+      puts "State: #{row['state']}"
+      puts "Zip Code: #{row['zip']}"
+      puts "Mobile: #{row['mobile']}"
+      puts "Home: #{row['home']}"
+      puts "Work: #{row['work']}"
+      puts "\n"
+
+    end
 
   rescue PG::Error => e
 
@@ -63,4 +73,17 @@ def get_data(first_name)
 
 end
 
-p get_data("John")  # {"id"=>"1", "fname"=>"John", "lname"=>"Doe", "addr"=>"606 Jacobs Street", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15220", "mobile"=>"4125550125", "home"=>"4125559816", "work"=>"4125550106"}
+# p get_data("John")  # {"id"=>"1", "fname"=>"John", "lname"=>"Doe", "addr"=>"606 Jacobs Street", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15220", "mobile"=>"4125550125", "home"=>"4125559816", "work"=>"4125550106"}
+get_data()
+
+#Example output
+# Entry Number 1
+# First Name: John
+# Last Name: Doe
+# Address: 606 Jacobs Street
+# City: Pittsburgh
+# State: PA
+# Zip Code: 15220
+# Mobile: 4125550125
+# Home: 4125559816
+# Work: 4125550106

@@ -1,0 +1,27 @@
+<div>
+
+  <h4>Please enter a value for one of the following and click <b>Submit</b>.</h4>
+
+  <table>
+    <tr>
+      <td><h5>Name</h5></td>
+      <td><h5>Favorite Number 1</h5></td>
+      <td><h5>Quote</h5></td>
+    </tr>
+  </table>
+
+  <div class = "padding">
+    <form  method = "post" action = "search_results">
+      <input type = "text" name = "value" required>
+      <input type = "submit">
+    </form>
+  </div>
+
+  <hr>
+
+  <!-- only populated if no search matches -->
+  <div class="feedback">
+    <p><i><%= feedback %></i></p>
+  </div>
+
+</div>

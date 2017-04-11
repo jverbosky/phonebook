@@ -1,0 +1,34 @@
+<div>
+
+  <h4>Please select the record to update.</h4>
+
+  <div class="padding">
+    <!-- dynamic table to list all users in personal_details.db -->
+    <table>
+      <tr>
+        <td class="results"><b>Name</b></td>
+        <td class="results"><b>Age</b></td>
+        <td class="results"><b>N1</b></td>
+        <td class="results"><b>N2</b></td>
+        <td class="results"><b>N3</b></td>
+        <td class="results"><b>Quote</b></td>
+      </tr>
+      <% results.each do |result| %>
+      <tr>
+        <% person = result["name"] %>
+        <% person.include? " " ? name = person.gsub(" ", "%20") : name = person %>
+        <% url = "/get_update?name=" + name %>
+        <td class="results"><a href=<%= url %>><%= person %></a></td>
+        <td class="results"><%= result["age"] %></td>
+        <td class="results"><%= result["n1"] %></td>
+        <td class="results"><%= result["n2"] %></td>
+        <td class="results"><%= result["n3"] %></td>
+        <td class="results"><%= result["quote"] %></td>
+      </tr>
+      <% end %>
+    </table>
+  </div>
+
+  <hr>
+
+</div>

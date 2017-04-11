@@ -1,0 +1,50 @@
+<div>
+
+  <h4>Please enter the requested details and click <b>Submit</b>:</h4>
+
+  <div class = "padding">
+    <form  method = "post" action = "post_info" enctype="multipart/form-data">
+      <table>
+        <tr>
+          <td class= "wide"><b>Name: </b></td>
+          <td class= "wide"><input type = "text" name = "user[name]" value = "<%= name %>" required></td>
+        </tr>
+        <tr>
+          <td class= "wide"><b>Age: </b></td>
+          <td class= "wide"><input type = "text" name = "user[age]" value = "<%= age %>" required></td>
+        </tr>
+        <tr>
+          <td class= "wide"><b>Favorite Number 1: </b></td>
+          <td class= "wide"><input type = "text" name = "user[n1]" value = "<%= n1 %>" required></td>
+        </tr>
+        <tr>
+          <td class= "wide"><b>Favorite Number 2: </b></td>
+          <td class= "wide"><input type = "text" name = "user[n2]" value = "<%= n2 %>" required></td>
+        </tr>
+        <tr>
+          <td class= "wide"><b>Favorite Number 3: </b></td>
+          <td class= "wide"><input type = "text" name = "user[n3]" value = "<%= n3 %>" required></td>
+        </tr>
+        <tr>
+          <td class= "wide"><b>Quote: </b></td>
+          <td class= "wide"><input type = "text" name = "user[quote]" value = "<%= quote %>" required></td>
+        </tr>
+        <tr>
+          <td class= "wide"><b>Avatar: </b></td>
+          <td class= "wide"><input type = "file" accept = "image/*" name = "user[image]" required></td>
+        </tr>
+      </table>
+      <div class = "button">
+        <input class="button-color" type = "submit">
+      </div>
+    </form>
+  </div>
+
+  <hr>
+
+  <!-- only populated if data validation issues -->
+  <div class="feedback">
+    <p><i><%= feedback %></i></p>
+  </div>
+
+</div>
