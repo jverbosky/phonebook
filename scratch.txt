@@ -1,0 +1,20 @@
+["Doe, Jen", "Fairbanks, Jim", "Smith, Jane", "Doe, Jill", "Langer, Jeff", "Smith, Joy", "Doe, Joe", "Roberts, Jake", "Smith, June", "Doe, John", "Scott, Jack", ""]
+
+
+http://localhost:9292/entry_info?fname=John&lname=Doe
+
+
+
+        <% group.each do |person| %>
+          <% lname = person.split(/,/).first %>
+          <% fname = person.split(/ /).last %>
+          <% unless fname == nil %>
+            <% url = "/entry_info?fname=" + fname + "&lname=" + lname %>
+          <% end %>
+          <td class="wide"><a href=<%= url %>><%= person %></a></td>
+        <% end %>
+
+
+1) Need to update URL for search_results.erb
+
+

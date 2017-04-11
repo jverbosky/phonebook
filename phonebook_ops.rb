@@ -161,7 +161,7 @@ def pull_records(value)
       rs.each { |result| results.push(result) }
       return results
     else
-      return [{"quote" => "No matching record - please try again."}]
+      return [{"addr" => "No matching record - please try again."}]
     end
   rescue PG::Error => e
     puts 'Exception occurred'
