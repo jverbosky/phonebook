@@ -1,6 +1,6 @@
 body {
-  background-color: #d2ddef;
-  color: #08337a;
+  background-color: #f4e842;
+  color: #000000;
 }
 
 div {
@@ -11,7 +11,7 @@ div {
 
 h1 {
   text-align: center;
-  color: #08337a;
+  color: #000000;
 }
 
 h4 {
@@ -25,23 +25,18 @@ h5 {
 hr {
   height: 1px;
   width: 450px;
-  border-top: 1px solid #01245e;
+  border-top: 1px solid #000000;
   margin-top: 5px;
   margin-bottom: 5px;
 }
 
 table {
-  outline: 1px solid #01245e;
+  outline: 1px solid #000000;
   width: 100%;
 }
 
 tr:nth-child(odd) {
-  background-color: #a5c1ef;
-}
-
-img {
-  max-width: 150px;
-  height: auto;
+  background-color: #fff791;
 }
 
 .center-block {
@@ -64,10 +59,16 @@ img {
 }
 
 .button-color {
-  background-color: #a5c1ef;
+  background-color: #fff791;
 }
 
 .wide {
+  text-align: left;
+  width: 180px;
+  padding: 8px;
+}
+
+.medium {
   text-align: left;
   width: 150px;
   padding: 8px;

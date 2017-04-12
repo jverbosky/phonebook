@@ -18,3 +18,17 @@ http://localhost:9292/entry_info?fname=John&lname=Doe
 1) Need to update URL for search_results.erb
 
 
+      <tr>
+        <% person = result["lname"] %>
+        <% person.include? " " ? name = person.gsub(" ", "%20") : name = person %>
+        <% url = "/get_update?name=" + name %>
+        <% url = "/entry_info?fname=" + result["fname"] + "&lname=" + result["lname"] %>
+        <td class="results"><a href=<%= url %>><%= person %></a></td>
+        <td class="results"><%= result["fname"] %></td>
+        <td class="results"><%= result["addr"] %></td>
+        <td class="results"><%= result["city"] %></td>
+        <td class="results"><%= result["state"] %></td>
+        <td class="results"><%= result["zip"] %></td>
+      </tr>
+
+
