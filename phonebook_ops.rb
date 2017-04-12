@@ -80,7 +80,7 @@ def check_values(entry_hash)
     (flag = 1; detail = key) if key == "zip" && value.length > 5
     (flag = 1; detail = key) if key =~ /mobile|home|work/ && value.length > 10
     (flag = 2; detail = key) if key == "state" && value.length > 2
-    flag = 3 if key =~ /fname|lname/ && value =~ /[^a-zA-Z ]/
+    flag = 3 if key =~ /fname|lname/ && value =~ /[^a-zA-Z. ]/
     (flag = 4; detail = key) if key =~ /zip|mobile|home|work/ && value =~ /[^0-9.,]/
   end
   case flag
@@ -92,17 +92,37 @@ def check_values(entry_hash)
   return feedback
 end
 
+def capitalize_initials(item)
+  if item.include? "."
+    i_temp_1 = item.split(".")
+    puts "i_temp_1: #{i_temp_1}"
+    i_temp_2 = i_temp_1.each { |word| word.capitalize! }
+    capitalized = i_temp_2.join(".")
+  else
+    item
+  end
+end
+
+# Method to capitalize phonebook entries
+def capitalize_items(item)
+  initials_check = capitalize_initials(item)
+  s_temp_1 = initials_check.split(" ")
+  puts "s_temp_1: #{s_temp_1}"
+  s_temp_2 = s_temp_1.each { |word| unless word.include? "." then word.capitalize! end }
+  capitalized = s_temp_2.join(" ")
+end
+
 # Method to add current entry hash to db
 def write_db(entry_hash)
   begin
     conn = open_db() # open database for updating
     max_id = conn.exec("select max(id) from listings")[0]  # determine current max index (id) in details table
     max_id["max"] == nil ? v_id = 1 : v_id = max_id["max"].to_i + 1  # set index variable based on current max index value
-    v_fname = entry_hash["fname"]  # prepare data from entry_hash for database insert
-    v_lname = entry_hash["lname"]
-    v_addr = entry_hash["addr"]
-    v_city = entry_hash["city"]
-    v_state = entry_hash["state"]
+    v_fname = capitalize_items(entry_hash["fname"])  # prepare data from entry_hash for database insert
+    v_lname = capitalize_items(entry_hash["lname"])
+    v_addr = capitalize_items(entry_hash["addr"])
+    v_city = capitalize_items(entry_hash["city"])
+    v_state = entry_hash["state"].upcase
     v_zip = entry_hash["zip"]
     v_mobile = entry_hash["mobile"]
     v_home = entry_hash["home"]
@@ -296,3 +316,8 @@ end
 # p check_values(hash_8)
 # p check_values(hash_9)
 # p check_values(hash_10)
+
+# p capitalize_items("long city name")  # Long City Name
+# p capitalize_items("d.c.")  # D.C.
+# p capitalize_items("d.c. highway")  # D.C. Highway
+# p capitalize_items("annie d.e. grant m.b.a.")  # "Annie d.E. Grant m.B.A"  - edge case
