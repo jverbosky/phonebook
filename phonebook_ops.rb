@@ -195,6 +195,24 @@ def update_values(entry_hash)
   end
 end
 
+# Method to delete a record from the database
+def delete_record(id_hash)
+  begin
+    id = id_hash["id"]  # determine the id for the current record
+    conn = open_db() # open database for updating
+    query = "delete from listings where id = $1"
+    conn.prepare('q_statement', query)
+    rs = conn.exec_prepared('q_statement', [id])
+    conn.exec("deallocate q_statement")
+    return "Record successfully deleted!"
+  rescue PG::Error => e
+    puts 'Exception occurred'
+    puts e.message
+  ensure
+    conn.close if conn
+  end
+end
+
 #-----------------
 # Sandbox testing
 #-----------------

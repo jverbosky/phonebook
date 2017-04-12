@@ -1,9 +1,9 @@
 <div>
 
-  <h4>Please select the record to update.</h4>
+  <h4>Please select the desired record:</h4>
 
   <div class="padding">
-    <!-- dynamic table to list all users in personal_details.db -->
+    <!-- dynamic table to list all users in phonebook -->
     <table>
       <tr>
         <td class="results"><b>Last</b></td>
@@ -15,10 +15,8 @@
       </tr>
       <% results.each do |result| %>
       <tr>
-        <% person = result["lname"] %>
-        <% person.include? " " ? name = person.gsub(" ", "%20") : name = person %>
-        <% url = "/get_update?name=" + name %>
-        <td class="results"><a href=<%= url %>><%= person %></a></td>
+        <% url = "/get_update?fname=" + result["fname"] + "&lname=" + result["lname"] %>
+        <td class="results"><a href=<%= url %>><%= result["lname"] %></a></td>
         <td class="results"><%= result["fname"] %></td>
         <td class="results"><%= result["addr"] %></td>
         <td class="results"><%= result["city"] %></td>
@@ -28,8 +26,6 @@
       <% end %>
     </table>
   </div>
-
-
 
   <hr>
 
