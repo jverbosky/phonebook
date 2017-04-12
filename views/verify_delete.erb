@@ -1,6 +1,7 @@
 <div>
 
-  <h4>Please click <b>Delete</b> to confirm deletion of the record for <%= entry_hash["fname"] %> <%= entry_hash["lname"] %>.</h4>
+  <h3><b>Confirmation Required</b></h3>
+  <h4>Click <b>Delete</b> to delete the record for <%= entry_hash["fname"] %> <%= entry_hash["lname"] %>.</h4>
 
   <form method = "post" action = "delete_info">
     <input type = "hidden" name = "id[id]" value = "<%= entry_hash["id"] %>">
