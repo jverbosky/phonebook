@@ -2,17 +2,28 @@
 
   <h4>Please enter a value for one of the following and click <b>Submit</b>.</h4>
 
-  <table>
+<!--   <table>
     <tr>
       <td class = "padding"><b>First Name</b></td>
       <td class = "padding"><b>Last Name</b></td>
       <td class = "padding"><b>City</b></td>
     </tr>
-  </table>
+  </table> -->
 
   <div class = "padding">
     <form  method = "post" action = "search_results">
-      <input type = "text" name = "value" required>
+      <select type = "text" name = "search[column]">
+        <option value = "fname">First Name</option>
+        <option value = "lname">Last Name</option>
+        <option value = "addr">Street Address</option>
+        <option value = "city">City</option>
+        <option value = "state">State Abbreviation</option>
+        <option value = "zip">Zip Code</option>
+        <option value = "mobile">Mobile Phone</option>
+        <option value = "home">Home Phone</option>
+        <option value = "work">Work Phone</option>
+      </select>
+      <input type = "text" name = "search[value]" required>
       <input type = "submit">
     </form>
   </div>

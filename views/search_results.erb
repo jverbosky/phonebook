@@ -12,6 +12,9 @@
         <td class="results"><b>City</b></td>
         <td class="results"><b>State</b></td>
         <td class="results"><b>Zip</b></td>
+        <td class="results"><b>Mobile</b></td>
+        <td class="results"><b>Home</b></td>
+        <td class="results"><b>Work</b></td>
       </tr>
       <% results.each do |result| %>
       <tr>
@@ -26,6 +29,12 @@
         <td class="results"><%= result["city"] %></td>
         <td class="results"><%= result["state"] %></td>
         <td class="results"><%= result["zip"] %></td>
+        <% m_format = "(" + result["mobile"][0, 3] + ") " + result["mobile"][3, 3] + "-" + result["mobile"][6, 4] %>
+        <td class="results"><%= m_format %></td>
+        <% h_format = "(" + result["home"][0, 3] + ") " + result["home"][3, 3] + "-" + result["home"][6, 4] %>
+        <td class="results"><%= h_format %></td>
+        <% w_format = "(" + result["work"][0, 3] + ") " + result["work"][3, 3] + "-" + result["work"][6, 4] %>
+        <td class="results"><%= w_format %></td>
       </tr>
       <% end %>
     </table>

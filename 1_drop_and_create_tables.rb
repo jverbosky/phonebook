@@ -26,10 +26,10 @@ begin
              addr varchar(50),
              city varchar(25),
              state varchar(2),
-             zip smallint,
-             mobile bigint,
-             home bigint,
-             work bigint)"
+             zip varchar(5),
+             mobile varchar(10),
+             home varchar(10),
+             work varchar(10))"
 
 rescue PG::Error => e
 

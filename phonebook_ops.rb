@@ -51,22 +51,22 @@ end
 
 # Method to return array of sorted/transposed names from db for populating /list_names table
 def get_names()
+  names = []  # array to hold names
   begin
-    names = []
     conn = open_db()
     conn.prepare('q_statement',
                  "select fname, lname from listings order by lname, fname")
     query = conn.exec_prepared('q_statement')
     conn.exec("deallocate q_statement")
-    query.each { |pair| names.push(pair["lname"] + ", " + pair["fname"]) }
-    names
-    sorted = names.count > 3 ? rotate_names(names) : names  # rerrange names if more than 3 names
   rescue PG::Error => e
     puts 'Exception occurred'
     puts e.message
   ensure
     conn.close if conn
   end
+  query.each { |pair| names.push(pair["lname"] + ", " + pair["fname"]) }
+  names
+  sorted = names.count > 3 ? rotate_names(names) : names  # rerrange names if more than 3 names
 end
 
 def state_array
@@ -124,12 +124,15 @@ def capitalize_items(item)
   cap_array = []
   array = item.split(" ")
   array.each do |word|
+    capped = word.capitalize  # use to evaluate case variations (word, Word, WORD)
     if word.include? "."
       cap_array.push(capitalize_initials(word) + ".")
-    elsif word =~ /[0-9]/
+    elsif word =~ /[0-9]/  # don't use .capitalize on numbers (drops them)
+      cap_array.push(word)
+    elsif capped == nil  # don't use .capitalize on capitalized words (drops them)
       cap_array.push(word)
     else
-      cap_array.push(word.capitalize!)
+      cap_array.push(capped)
     end
   end
   capitalized = cap_array.join(" ")
@@ -163,70 +166,42 @@ def write_db(entry_hash)
   end
 end
 
-# Method to identify which column contains specified value
-def match_column(value)
+# Method to return array of record hashes associated with specified value and column
+def pull_records(search_array)
+  value = search_array["value"]
+  column = search_array["column"]
+  results = []  # array to hold all matching hashes
   begin
-    columns = ["fname", "lname", "city"]
-    target = ""
-    conn = open_db() # open database for updating
-    columns.each do |column|  # determine which column contains the specified value
-      query = "select " + column +
-              " from listings"
-      conn.prepare('q_statement', query)
-      rs = conn.exec_prepared('q_statement')
-      conn.exec("deallocate q_statement")
-      results = rs.values.flatten
-      results.each { |e| return column if e =~ /#{value}/i }
-    end
-    return target
+    conn = open_db()
+    query = "select *
+             from listings
+             where " + column + " ilike $1
+             order by lname, fname"
+    conn.prepare('q_statement', query)
+    rs = conn.exec_prepared('q_statement', ["%" + value + "%"])
+    conn.exec("deallocate q_statement")
   rescue PG::Error => e
     puts 'Exception occurred'
     puts e.message
   ensure
     conn.close if conn
   end
-end
-
-# Method to return hash of all values for record associated with specified value
-def pull_records(value)
-  begin
-    column = match_column(value)  # determine which column contains the specified value
-    unless column == ""
-      results = []  # array to hold all matching hashes
-      conn = open_db()
-      query = "select *
-               from listings
-               where " + column + " ilike $1
-               order by lname, fname"
-      conn.prepare('q_statement', query)
-      rs = conn.exec_prepared('q_statement', ["%" + value + "%"])
-      conn.exec("deallocate q_statement")
-      rs.each { |result| results.push(result) }
-      return results
-    else
-      return [{"addr" => "No matching record - please try again."}]
-    end
-  rescue PG::Error => e
-    puts 'Exception occurred'
-    puts e.message
-  ensure
-    conn.close if conn
-  end
+  rs.each { |result| results.push(result) }
+  results == [] ? [{"addr" => "No matching record - please try again."}] : results
 end
 
 # Method to update any number of values in any number of tables
 # - entry hash needs to contain id of current record that needs to be updated
 # - order is not important (the id can be anywhere in the hash)
 def update_values(entry_hash)
+  id = entry_hash["id"]  # determine the id for the current record
   begin
-    id = entry_hash["id"]  # determine the id for the current record
     conn = open_db() # open database for updating
     entry_hash.each do |column, value|  # iterate through entry_hash for each column/value pair
       unless column == "id"  # we do NOT want to update the id
         value = capitalize_items(value) if column =~ /fname|lname|addr|city/
         value.upcase! if column == "state"
-        # workaround for column name used as bind parameter
-        query = "update listings set " + column + " = $2 where id = $1"
+        query = "update listings set " + column + " = $2 where id = $1"  # can't use column name as bind parameter
         conn.prepare('q_statement', query)
         rs = conn.exec_prepared('q_statement', [id, value])
         conn.exec("deallocate q_statement")
@@ -242,27 +217,28 @@ end
 
 # Method to delete a record from the database
 def delete_record(id_hash)
+  id = id_hash["id"]  # determine the id for the current record
   begin
-    id = id_hash["id"]  # determine the id for the current record
     conn = open_db() # open database for updating
     query = "delete from listings where id = $1"
     conn.prepare('q_statement', query)
     rs = conn.exec_prepared('q_statement', [id])
     conn.exec("deallocate q_statement")
-    return "Record successfully deleted!"
   rescue PG::Error => e
     puts 'Exception occurred'
     puts e.message
   ensure
     conn.close if conn
   end
+  return "Record successfully deleted!"
 end
 
 #-----------------
 # Sandbox testing
 #-----------------
 
-# p get_entry("John")  # {"id"=>"1", "fname"=>"John", "lname"=>"Doe", "addr"=>"606 Jacobs Street", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15220", "mobile"=>"4125550125", "home"=>"4125559816", "work"=>"4125550106"}
+# p get_entry("John", "Doe")
+# {"id"=>"1", "fname"=>"John", "lname"=>"Doe", "addr"=>"606 Jacobs Street", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15220", "mobile"=>"4125550125", "home"=>"4125559816", "work"=>"4125550106"}
 
 # entry_hash = {"fname"=>"Jake", "lname"=>"Roberts", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
 # write_db(entry_hash)
@@ -279,27 +255,6 @@ end
 # hash_1 = {"fname"=>"lou", "lname"=>"something", "addr"=>"123 lane street", "city"=>"asdf", "state"=>"pa", "zip"=>"12325", "mobile"=>"6549876540", "home"=>"6549873210", "work"=>"6543216548", "id"=>"15"}
 
 # update_values(hash_1)
-
-# p match_column("John")  # "fname"
-# p match_column("Smith")  # "lname"
-# p match_column("Monroeville")  # "city"
-# p match_column("nothing")  #  ""
-
-# p pull_records("John")
-# [{"id"=>"1", "fname"=>"John", "lname"=>"Doe", "addr"=>"606 Jacobs Street", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15220", "mobile"=>"4125550125", "home"=>"4125559816", "work"=>"4125550106"}]
-
-# p pull_records("Smith")
-# [{"id"=>"2", "fname"=>"Jane", "lname"=>"Smith", "addr"=>"3974 Riverside Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15201", "mobile"=>"8785550101", "home"=>"8785557000", "work"=>"4125550197"},
-#  {"id"=>"10", "fname"=>"Joy", "lname"=>"Smith", "addr"=>"879 Shinn Avenue", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15201", "mobile"=>"7245550195", "home"=>"7245551579", "work"=>"4125550131"},
-#  {"id"=>"5", "fname"=>"June", "lname"=>"Smith", "addr"=>"3210 Stiles Street", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15201", "mobile"=>"4125550163", "home"=>"4125557989", "work"=>"4125550198"}]
-
-# p pull_records("Monroeville")
-# [{"id"=>"9", "fname"=>"Joe", "lname"=>"Doe", "addr"=>"2391 Losh Lane", "city"=>"Monroeville", "state"=>"PA", "zip"=>"15146", "mobile"=>"4125550184", "home"=>"4125554784", "work"=>"4125550166"},
-#  {"id"=>"7", "fname"=>"Jeff", "lname"=>"Langer", "addr"=>"2731 Platinum Drive", "city"=>"Monroeville", "state"=>"PA", "zip"=>"15140", "mobile"=>"8785550195", "home"=>"8785556851", "work"=>"4125550172"},
-#  {"id"=>"2", "fname"=>"Jane", "lname"=>"Smith", "addr"=>"3974 Riverside Drive", "city"=>"Monroeville", "state"=>"PA", "zip"=>"15146", "mobile"=>"8785550101", "home"=>"8785557000", "work"=>"4125550197"}]
-
-# p pull_records("nothing")
-# [{"quote"=>"No matching record - please try again."}]
 
 # First name too short (1)
 # hash_2 = {"id"=>"11", "fname"=>"J", "lname"=>"Robertson", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
@@ -374,9 +329,40 @@ end
 
 # p capitalize_initials("m.b.a.")  # M.B.A.
 
+# p capitalize_items("jake")  # Jake
+# p capitalize_items("Jake")  # Jake
+# p capitalize_items("JAKE")  # Jake
+# p capitalize_items("Long City Name")  # Long City Name
 # p capitalize_items("long city name")  # Long City Name
+# p capitalize_items("LONG CITY NAME")  # Long City Name
+# p capitalize_items("D.C.")  # D.C.
 # p capitalize_items("d.c.")  # D.C.
+# p capitalize_items("D.C. Highway")  # D.C. Highway
 # p capitalize_items("d.c. highway")  # D.C. Highway
+# p capitalize_items("D.C. HIGHWAY")  # D.C. Highway
+# p capitalize_items("Annie D.E. Grant M.B.A")  # Annie D.E. Grant M.B.A
 # p capitalize_items("annie d.e. grant m.b.a.")  # Annie D.E. Grant M.B.A
+# p capitalize_items("ANNIE D.E. GRANT M.B.A")  # Annie D.E. Grant M.B.A
+# p capitalize_items("Dr. Smith")  # Dr. Smith
 # p capitalize_items("dr. smith")  # Dr. Smith
+# p capitalize_items("DR. SMITH")  # Dr. Smith
+# p capitalize_items("103 Sunshine Lane")  # 103 Sunshine Lane
 # p capitalize_items("103 sunshine lane")  # 103 Sunshine Lane
+# p capitalize_items("103 SUNSHINE LANE")  # 103 Sunshine Lane
+
+# search_array = {"value"=>"something", "column"=>"fname"}
+# [{"addr"=>"No matching record - please try again."}]
+
+# search_array = {"value"=>"doe", "column"=>"lname"}
+# [{"id"=>"6", "fname"=>"Jen", "lname"=>"Doe", "addr"=>"3261 Michigan Avenue", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15222", "mobile"=>"7245550190", "home"=>"7245550624", "work"=>"7245550146"},
+#  {"id"=>"4", "fname"=>"Jill", "lname"=>"Doe", "addr"=>"2294 Washington Avenue", "city"=>"Sewickley", "state"=>"PA", "zip"=>"15143", "mobile"=>"7245550136", "home"=>"7245551953", "work"=>"4125550150"},
+#  {"id"=>"9", "fname"=>"Joe", "lname"=>"Doe", "addr"=>"2391 Losh Lane", "city"=>"Monroeville", "state"=>"PA", "zip"=>"15146", "mobile"=>"4125550184", "home"=>"4125554784", "work"=>"4125550166"},
+#  {"id"=>"1", "fname"=>"John", "lname"=>"Doe", "addr"=>"606 Jacobs Street", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15220", "mobile"=>"4125550125", "home"=>"4125559816", "work"=>"4125550106"}]
+
+# search_array = {"value"=>"do", "column"=>"lname"}
+# [{"id"=>"6", "fname"=>"Jen", "lname"=>"Doe", "addr"=>"3261 Michigan Avenue", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15222", "mobile"=>"7245550190", "home"=>"7245550624", "work"=>"7245550146"},
+#  {"id"=>"4", "fname"=>"Jill", "lname"=>"Doe", "addr"=>"2294 Washington Avenue", "city"=>"Sewickley", "state"=>"PA", "zip"=>"15143", "mobile"=>"7245550136", "home"=>"7245551953", "work"=>"4125550150"},
+#  {"id"=>"9", "fname"=>"Joe", "lname"=>"Doe", "addr"=>"2391 Losh Lane", "city"=>"Monroeville", "state"=>"PA", "zip"=>"15146", "mobile"=>"4125550184", "home"=>"4125554784", "work"=>"4125550166"},
+#  {"id"=>"1", "fname"=>"John", "lname"=>"Doe", "addr"=>"606 Jacobs Street", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15220", "mobile"=>"4125550125", "home"=>"4125559816", "work"=>"4125550106"}]
+
+# p pull_records(search_array)

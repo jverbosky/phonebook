@@ -47,8 +47,8 @@ class PhonebookApp < Sinatra::Base
   end
 
   post '/search_results' do
-    value = params[:value]
-    results = pull_records(value)  # get array of hashes for all matching records
+    search_array = params[:search]
+    results = pull_records(search_array)  # get array of hashes for all matching records
     feedback = results[0]["addr"]
     if feedback == "No matching record - please try again."
       erb :search, locals: {feedback: feedback}

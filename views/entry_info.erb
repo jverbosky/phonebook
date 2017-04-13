@@ -1,8 +1,9 @@
-<div>
-
+<!-- format phone numbers -->
 <% m_format = "(" + entry_hash["mobile"][0, 3] + ") " + entry_hash["mobile"][3, 3] + "-" + entry_hash["mobile"][6, 4] %>
 <% h_format = "(" + entry_hash["home"][0, 3] + ") " + entry_hash["home"][3, 3] + "-" + entry_hash["home"][6, 4] %>
 <% w_format = "(" + entry_hash["work"][0, 3] + ") " + entry_hash["work"][3, 3] + "-" + entry_hash["work"][6, 4] %>
+
+<div>
 
   <div>
     <h4>Here are the details for <%= entry_hash["fname"] %> <%= entry_hash["lname"] %>:</h4>
