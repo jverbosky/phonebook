@@ -244,6 +244,7 @@ end
 # write_db(entry_hash)
 
 # p get_names()
+# ["Doe, Jen", "Fairbanks, Jim Bob", "Smith, Joy", "Doe, Jill", "Langer, Jeff", "Smith, June", "Doe, Joe", "Scott M.D., Jack", "", "Doe, John", "Smith, Jane", ""]
 
 # hash_1 = {"id"=>"11", "fname"=>"Jake", "lname"=>"Robertson", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
 # hash_1 = {"fname"=>"Jacob", "lname"=>"Robert", "addr"=>"146 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125558888", "home"=>"4125558349", "work"=>"4125556843", "id"=>"11"}

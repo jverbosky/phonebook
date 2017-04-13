@@ -11,7 +11,7 @@
         <tr>
         <% group.each do |person| %>
           <% lname = person.split(/,/).first %>
-          <% fname = person.split(/ /).last %>
+          <% fname = person.split(/, /).last %>
           <% unless fname == nil %>
             <% fname.include? " " ? furl = fname.gsub(" ", "%20") : furl = fname %>
             <% lname.include? " " ? lurl = lname.gsub(" ", "%20") : lurl = lname %>
