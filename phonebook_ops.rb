@@ -89,21 +89,23 @@ def check_values(entry_hash)
     (flag = 7; detail = key) if key =~ /mobile|home|work/ && value.length != 10
      flag = 8 if key == "state" && (!state_array.include? value.upcase)
      flag = 9 if key =~ /fname|lname/ && value =~ /[^a-zA-Z.\- ]/
-     flag = 10 if key == "city" && value =~ /[^a-zA-Z.\- ]/
-    (flag = 11; detail = key) if key =~ /zip|mobile|home|work/ && value =~ /[^0-9.,]/
+     flag = 10 if key == "addr" && value =~ /[^0-9a-zA-z.\- ]/
+     flag = 11 if key == "city" && value =~ /[^a-zA-Z.\- ]/
+    (flag = 12; detail = key) if key =~ /zip|mobile|home|work/ && value =~ /[^0-9]/
   end
   case flag
     when 1 then feedback = "The first name is too short - please enter at least two letters for the first name."
     when 2 then feedback = "The last name is too short - please enter at least two letters for the last name."
     when 3 then feedback = "Please specify a house number and a street name for the address."
-    when 4 then feedback = "The value for '#{detail}' is too long - please try again with a shorter value."
+    when 4 then feedback = "The value for '#{detail}' is too long - please use a shorter value."
     when 5 then feedback = "The city name is too short - please enter at least two letters for the city name."
     when 6 then feedback = "Please enter five digits for the zip code."
     when 7 then feedback = "Please enter ten digits for the #{detail} phone number."
     when 8 then feedback = "Please use a valid two-letter abbreviation for the state name."
-    when 9 then feedback = "The name should only contain letters, hyphens or periods - please try again."
-    when 10 then feedback = "The city name should only contain letters, hyphens or periods - please try again."
-    when 11 then feedback = "The value for '#{detail}' should only have numbers - please try again."
+    when 9 then feedback = "The name should only contain letters, hyphens or periods."
+    when 10 then feedback = "The street address should only contain numbers, letters, hyphens or periods."
+    when 11 then feedback = "The city name should only contain letters, hyphens or periods."
+    when 12 then feedback = "The value for '#{detail}' should only have numbers."
   end
   return feedback
 end
