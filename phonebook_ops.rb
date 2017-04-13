@@ -119,6 +119,17 @@ def capitalize_initials(item)
   end
 end
 
+# Method to capitalize hyphenated names (ex: smith-hayer > Smith-Hayer)
+def capitalize_hyphenated_name(item)
+  if item.include? "-"
+    array = item.split("-")
+    cap_array = array.each { |word| word.capitalize! }
+    capitalized = cap_array.join("-")
+  else
+    item
+  end
+end
+
 # Method to capitalize phonebook entries
 def capitalize_items(item)
   cap_array = []
@@ -127,6 +138,8 @@ def capitalize_items(item)
     capped = word.capitalize  # use to evaluate case variations (word, Word, WORD)
     if word.include? "."
       cap_array.push(capitalize_initials(word) + ".")
+    elsif word.include? "-"
+      cap_array.push(capitalize_hyphenated_name(word))
     elsif word =~ /[0-9]/  # don't use .capitalize on numbers (drops them)
       cap_array.push(word)
     elsif capped == nil  # don't use .capitalize on capitalized words (drops them)
@@ -350,6 +363,12 @@ end
 # p capitalize_items("103 Sunshine Lane")  # 103 Sunshine Lane
 # p capitalize_items("103 sunshine lane")  # 103 Sunshine Lane
 # p capitalize_items("103 SUNSHINE LANE")  # 103 Sunshine Lane
+# p capitalize_items("jessica c. smith-hayer")  # Jessica C. Smith-Hayer
+# p capitalize_items("Jessica C. Smith-Hayer")  # Jessica C. Smith-Hayer
+# p capitalize_items("JESSICA C. SMITH-HAYER")  # Jessica C. Smith-Hayer
+# p capitalize_items("523 here-you-are st.")  # 523 Here-You-Are St.
+# p capitalize_items("523 Here-You-Are St.")  # 523 Here-You-Are St.
+# p capitalize_items("523 HERE-YOU-ARE ST.")  # 523 Here-You-Are St.
 
 # search_array = {"value"=>"something", "column"=>"fname"}
 # [{"addr"=>"No matching record - please try again."}]
