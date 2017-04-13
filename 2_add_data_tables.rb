@@ -10,7 +10,7 @@ begin
   entry_2 = ["Jane C.", "Smith", "3974 Riverside Drive", "Monroeville", "PA", 15146, 8785550101, 8785557000, 4125550197]
   entry_3 = ["Jim Bob", "Fairbanks Jr.", "3801 Beechwood Drive", "Wexford", "PA", 15090, 4125550167, 4125553878, 7245550133]
   entry_4 = ["Jill", "Doe", "2294 Washington Avenue", "Sewickley", "PA", 15143, 7245550136, 7245551953, 4125550150]
-  entry_5 = ["June", "Smith-Lewis", "3210 Stiles Street", "Imperial", "PA", 15126, 4125550163, 4125557989, 4125550198]
+  entry_5 = ["June", "Smith-Lewis", "3210 North-West Street", "Imperial", "PA", 15126, 4125550163, 4125557989, 4125550198]
   entry_6 = ["Jen", "Doe", "3261 Michigan Avenue", "Pittsburgh", "PA", 15222, 7245550190, 7245550624, 7245550146]
   entry_7 = ["Jeff", "Langer", "2731 Platinum Drive", "Monroeville", "PA", 15140, 8785550195, 8785556851, 4125550172]
   entry_8 = ["Jack", "Scott M.D.", "4168 University Drive", "Mt. Lebanon", "PA", 15216, 4125550107, 4125552529, 4125550113]
