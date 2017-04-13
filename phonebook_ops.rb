@@ -112,24 +112,16 @@ end
 
 # Method to capitalize initials (ex: m.b.a > M.B.A.)
 def capitalize_initials(item)
-  if item.include? "."
-    array = item.split(".")
-    cap_array = array.each { |word| word.capitalize! }
-    capitalized = cap_array.join(".")
-  else
-    item
-  end
+  array = item.split(".")
+  cap_array = array.each { |word| word.capitalize! }
+  capitalized = cap_array.join(".")
 end
 
 # Method to capitalize hyphenated names (ex: smith-hayer > Smith-Hayer)
 def capitalize_hyphenated_name(item)
-  if item.include? "-"
-    array = item.split("-")
-    cap_array = array.each { |word| word.capitalize! }
-    capitalized = cap_array.join("-")
-  else
-    item
-  end
+  array = item.split("-")
+  cap_array = array.each { |word| word.capitalize! }
+  capitalized = cap_array.join("-")
 end
 
 # Method to capitalize phonebook entries
@@ -137,14 +129,12 @@ def capitalize_items(item)
   cap_array = []
   array = item.split(" ")
   array.each do |word|
-    capped = word.capitalize  # use to evaluate case variations (word, Word, WORD)
+    capped = word.capitalize  # use for case variations (word, Word, WORD) evaluation and transform
     if word.include? "."
       cap_array.push(capitalize_initials(word) + ".")
     elsif word.include? "-"
       cap_array.push(capitalize_hyphenated_name(word))
-    elsif word =~ /[0-9]/  # don't use .capitalize on numbers (drops them)
-      cap_array.push(word)
-    elsif capped == nil  # don't use .capitalize on capitalized words (drops them)
+    elsif word =~ /[0-9]/ || capped == nil  # don't use .capitalize on numbers or capitalized words (drops them)
       cap_array.push(word)
     else
       cap_array.push(capped)
