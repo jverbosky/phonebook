@@ -155,19 +155,19 @@ end
 
 # Method to add current entry hash to db
 def write_db(entry_hash)
+  v_fname = capitalize_items(entry_hash["fname"])  # prepare data from entry_hash for database insert
+  v_lname = capitalize_items(entry_hash["lname"])
+  v_addr = capitalize_items(entry_hash["addr"])
+  v_city = capitalize_items(entry_hash["city"])
+  v_state = entry_hash["state"].upcase
+  v_zip = entry_hash["zip"]
+  v_mobile = entry_hash["mobile"]
+  v_home = entry_hash["home"]
+  v_work = entry_hash["work"]
   begin
     conn = open_db() # open database for updating
     max_id = conn.exec("select max(id) from listings")[0]  # determine current max index (id) in details table
     max_id["max"] == nil ? v_id = 1 : v_id = max_id["max"].to_i + 1  # set index variable based on current max index value
-    v_fname = capitalize_items(entry_hash["fname"])  # prepare data from entry_hash for database insert
-    v_lname = capitalize_items(entry_hash["lname"])
-    v_addr = capitalize_items(entry_hash["addr"])
-    v_city = capitalize_items(entry_hash["city"])
-    v_state = entry_hash["state"].upcase
-    v_zip = entry_hash["zip"]
-    v_mobile = entry_hash["mobile"]
-    v_home = entry_hash["home"]
-    v_work = entry_hash["work"]
     conn.prepare('q_statement',
                  "insert into listings (id, fname, lname, addr, city, state, zip, mobile, home, work)
                   values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)")  # bind parameters
