@@ -101,8 +101,8 @@ def check_values(entry_hash)
     when 6 then feedback = "Please enter five digits for the zip code."
     when 7 then feedback = "Please enter ten digits for the #{detail} phone number."
     when 8 then feedback = "Please use a valid two-letter abbreviation for the state name."
-    when 9 then feedback = "The name should only contain letters - please try again."
-    when 10 then feedback = "The city name should only contain letters - please try again."
+    when 9 then feedback = "The name should only contain letters, hyphens or periods - please try again."
+    when 10 then feedback = "The city name should only contain letters, hyphens or periods - please try again."
     when 11 then feedback = "The value for '#{detail}' should only have numbers - please try again."
   end
   return feedback
