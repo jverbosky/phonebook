@@ -92,12 +92,12 @@ def check_values(entry_hash)
   return feedback
 end
 
+# Method to capitalize initials (ex: m.b.a > M.B.A.)
 def capitalize_initials(item)
   if item.include? "."
-    i_temp_1 = item.split(".")
-    puts "i_temp_1: #{i_temp_1}"
-    i_temp_2 = i_temp_1.each { |word| word.capitalize! }
-    capitalized = i_temp_2.join(".")
+    array = item.split(".")
+    cap_array = array.each { |word| word.capitalize! }
+    capitalized = cap_array.join(".")
   else
     item
   end
@@ -105,11 +105,16 @@ end
 
 # Method to capitalize phonebook entries
 def capitalize_items(item)
-  initials_check = capitalize_initials(item)
-  s_temp_1 = initials_check.split(" ")
-  puts "s_temp_1: #{s_temp_1}"
-  s_temp_2 = s_temp_1.each { |word| unless word.include? "." then word.capitalize! end }
-  capitalized = s_temp_2.join(" ")
+  cap_array = []
+  array = item.split(" ")
+  array.each do |word|
+    if word.include? "."
+      cap_array.push(capitalize_initials(word) + ".")
+    else
+      cap_array.push(word.capitalize!)
+    end
+  end
+  capitalized = cap_array.join(" ")
 end
 
 # Method to add current entry hash to db
@@ -317,7 +322,10 @@ end
 # p check_values(hash_9)
 # p check_values(hash_10)
 
+# p capitalize_initials("m.b.a.")  # M.B.A.
+
 # p capitalize_items("long city name")  # Long City Name
 # p capitalize_items("d.c.")  # D.C.
 # p capitalize_items("d.c. highway")  # D.C. Highway
-# p capitalize_items("annie d.e. grant m.b.a.")  # "Annie d.E. Grant m.B.A"  - edge case
+# p capitalize_items("annie d.e. grant m.b.a.")  # Annie D.E. Grant M.B.A
+# p capitalize_items("dr. smith")  # Dr. Smith
