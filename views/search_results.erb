@@ -15,7 +15,11 @@
       </tr>
       <% results.each do |result| %>
       <tr>
-        <% url = "/get_update?fname=" + result["fname"] + "&lname=" + result["lname"] %>
+        <% first = result["fname"] %>
+        <% first.include? " " ? fname = first.gsub(" ", "%20") : fname = first %>
+        <% last = result["lname"] %>
+        <% last.include? " " ? lname = last.gsub(" ", "%20") : lname = last %>
+        <% url = "/get_update?fname=" + fname + "&lname=" + lname %>
         <td class="results"><a href=<%= url %>><%= result["lname"] %></a></td>
         <td class="results"><%= result["fname"] %></td>
         <td class="results"><%= result["addr"] %></td>
