@@ -89,7 +89,8 @@ def check_values(entry_hash)
     (flag = 7; detail = key) if key =~ /mobile|home|work/ && value.length != 10
      flag = 8 if key == "state" && (!state_array.include? value.upcase)
      flag = 9 if key =~ /fname|lname/ && value =~ /[^a-zA-Z. ]/
-    (flag = 10; detail = key) if key =~ /zip|mobile|home|work/ && value =~ /[^0-9.,]/
+     flag = 10 if key == "city" && value =~ /[^a-zA-Z. ]/
+    (flag = 11; detail = key) if key =~ /zip|mobile|home|work/ && value =~ /[^0-9.,]/
   end
   case flag
     when 1 then feedback = "The first name is too short - please enter at least two letters for the first name."
@@ -101,7 +102,8 @@ def check_values(entry_hash)
     when 7 then feedback = "Please enter ten digits for the #{detail} phone number."
     when 8 then feedback = "Please use a valid two-letter abbreviation for the state name."
     when 9 then feedback = "The name should only contain letters - please try again."
-    when 10 then feedback = "The value for '#{detail}' should only have numbers - please try again."
+    when 10 then feedback = "The city name should only contain letters - please try again."
+    when 11 then feedback = "The value for '#{detail}' should only have numbers - please try again."
   end
   return feedback
 end
