@@ -15,14 +15,17 @@ class PhonebookApp < Sinatra::Base
   end
 
   post '/post_entry' do
-    entry_hash = params[:entry]  # assign the entry hash to the entry_hash variable
-    feedback = check_values(entry_hash)  # data validation
+    raw_hash = params[:entry]  # assign the entry hash to the entry_hash variable
+    feedback = check_values(raw_hash)  # data validation
     if feedback == ""  # if there's no field validation feedback, use the post_entry view
-      write_db(entry_hash)  # if not, add entry info to db
+      write_db(raw_hash)  # if not, add entry info to db
+      fname = capitalize_items(raw_hash["fname"])
+      lname = capitalize_items(raw_hash["lname"])
+      entry_hash = get_entry(fname, lname)
       erb :post_entry, locals: {entry_hash: entry_hash}
     else
       # otherwise reload the get_entry view with feedback and user-specified values so they can correct and resubmit
-      erb :get_entry, locals: {entry_hash: entry_hash, feedback: feedback}
+      erb :get_entry, locals: {entry_hash: raw_hash, feedback: feedback}
     end
   end
 
@@ -63,14 +66,17 @@ class PhonebookApp < Sinatra::Base
   end
 
   post '/update_info' do
-    entry_hash = params[:entry]
-    feedback = check_values(entry_hash)  # data validation
+    raw_hash = params[:entry]
+    feedback = check_values(raw_hash)  # data validation
     if feedback == ""  # if there's no field validation feedback, use the post_entry view
-      update_values(entry_hash)
+      update_values(raw_hash)
+      fname = capitalize_items(raw_hash["fname"])
+      lname = capitalize_items(raw_hash["lname"])
+      entry_hash = get_entry(fname, lname)
       erb :post_entry, locals: {entry_hash: entry_hash, feedback: feedback}
     else
       # otherwise reload the get_info view with feedback and user-specified values so they can correct and resubmit
-      erb :update_user, locals: {entry_hash: entry_hash, feedback: feedback}
+      erb :update_user, locals: {entry_hash: raw_hash, feedback: feedback}
     end
   end
 
