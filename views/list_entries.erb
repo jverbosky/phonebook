@@ -13,7 +13,9 @@
           <% lname = person.split(/,/).first %>
           <% fname = person.split(/ /).last %>
           <% unless fname == nil %>
-            <% url = "/entry_info?fname=" + fname + "&lname=" + lname %>
+            <% fname.include? " " ? furl = fname.gsub(" ", "%20") : furl = fname %>
+            <% lname.include? " " ? lurl = lname.gsub(" ", "%20") : lurl = lname %>
+            <% url = "/entry_info?fname=" + furl + "&lname=" + lurl %>
           <% end %>
           <td class="medium"><a href=<%= url %>><%= person %></a></td>
         <% end %>
