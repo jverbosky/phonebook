@@ -88,7 +88,7 @@ def check_values(entry_hash)
      flag = 6 if key == "zip" && value.length != 5
     (flag = 7; detail = key) if key =~ /mobile|home|work/ && value.length != 10
      flag = 8 if key == "state" && (!state_array.include? value.upcase)
-     flag = 9 if key =~ /fname|lname/ && value =~ /[^a-zA-Z. ]/
+     flag = 9 if key =~ /fname|lname/ && value =~ /[^a-zA-Z.\- ]/
      flag = 10 if key == "city" && value =~ /[^a-zA-Z. ]/
     (flag = 11; detail = key) if key =~ /zip|mobile|home|work/ && value =~ /[^0-9.,]/
   end
