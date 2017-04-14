@@ -1,5 +1,5 @@
 require 'pg'
-load "./local_env.rb" if File.exists?("./local_env.rb")
+load "./methods/local_env.rb" if File.exists?("./methods/local_env.rb")
 
 # Method to open a connection to the PostgreSQL database
 def open_db()

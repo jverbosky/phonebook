@@ -4,8 +4,11 @@
 <% h_format = "(" + entry_hash["home"][0, 3] + ") " + entry_hash["home"][3, 3] + "-" + entry_hash["home"][6, 4] %>
 <% w_format = "(" + entry_hash["work"][0, 3] + ") " + entry_hash["work"][3, 3] + "-" + entry_hash["work"][6, 4] %>
 
-
+<% if entry_hash.key?("id") %>
   <h4>Details for <%= entry_hash["fname"] %> <%= entry_hash["lname"] %> have been updated!</h4>
+<% else %>
+  <h4>Details for <%= entry_hash["fname"] %> <%= entry_hash["lname"] %> have been added!</h4>
+<% end %>
 
   <hr>
 
