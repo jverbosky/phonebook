@@ -1,12 +1,9 @@
-# note - some unit tests depend on database contents, so run tests after dropping/seeding tables
-# database contents-dependent tests: 7
-
 require "minitest/autorun"
 require_relative "../methods/phonebook_ops.rb"
-load "../methods/local_env.rb" if File.exists?("../methods/local_env.rb")
+load "../methods/1_drop_and_create_tables.rb"  # run the script to drop tables
+load "../methods/2_add_data_tables.rb"  # run the script to seed tables
 
 class TestPhonebookOps < Minitest::Test
-  i_suck_and_my_tests_are_order_dependent!  # this forces the assertions to run in order, only vital for 7
 
   def test_1_verify_database_connection
     conn = open_db()
@@ -49,10 +46,14 @@ class TestPhonebookOps < Minitest::Test
     assert_equal(rotated, result)
   end
 
-  def test_7_verify_get_names
-    names = ["Doe, Jen", "Fairbanks Jr., Jim Bob", "Smith, Joy", "Doe, Jill", "Langer, Jeff", "Smith-Lewis, June", "Doe, John", "Scott M.D., Jack", "", "Doe III, Joe", "Smith, Jane C.", ""]
-    result = get_names()
-    assert_equal(names, result)
+  # need to provide array of names at all states (initial seeding, after writing to db, after updating record in db)
+  def test_7_verify_get_names_from_db
+    user_array = get_names()
+    names = [["Doe, Jen", "Fairbanks Jr., Jim Bob", "Smith, Jane C.", "Doe, Jill", "Langer, Jeff", "Smith, Joy", "Doe, John", "Roberts, Jake", "Smith-Lewis, June", "Doe III, Joe", "Scott M.D., Jack", ""],
+             ["Doe, Jen", "Fairbanks Jr., Jim Bob", "Smith, Joy", "Doe, Jill", "Langer, Jeff", "Smith-Lewis, June", "Doe, John", "Scott M.D., Jack", "", "Doe III, Joe", "Smith, Jane C.", ""],
+             ["Doe, Jen", "Fairbanks Jr., Jim Bob", "Scott M.D., Jack", "Doe, Jill", "Langer, Jeff", "Smith, Jane C.", "Doe, John", "Roberts, Jake", "Smith, Joy", "Doe III, Joe", "Robertson, Jake", "Smith-Lewis, June"]]
+    result = names.include? user_array
+    assert_equal(true, result)
   end
 
   def test_8_verify_abbreviated_states_array_contents
@@ -418,21 +419,70 @@ class TestPhonebookOps < Minitest::Test
     assert_equal(feedback, result)
   end
 
+  def test_65_verify_resulting_hash_for_write_db
+    formatted = {"fname"=>"Jake", "lname"=>"Roberts", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+    entry_hash = {"fname"=>"jake", "lname"=>"roberts", "addr"=>"328 oakdale drive", "city"=>"pittsburgh", "state"=>"pa", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+    result = write_db(entry_hash)
+    assert_equal(formatted, result)
+  end
 
+  def test_66_verify_pull_record_via_first_name
+    db_hash = [{"id"=>"1", "fname"=>"John", "lname"=>"Doe", "addr"=>"606 Jacobs Street", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15220", "mobile"=>"4125550125", "home"=>"4125559816", "work"=>"4125550106"}]
+    search_array = {"value"=>"joh", "column"=>"fname"}
+    result = pull_records(search_array)
+    assert_equal(db_hash, result)
+  end
 
+  def test_67_verify_pull_record_via_last_name
+    db_hash = [{"id"=>"7", "fname"=>"Jeff", "lname"=>"Langer", "addr"=>"2731 Platinum Drive", "city"=>"Monroeville", "state"=>"PA", "zip"=>"15140", "mobile"=>"8785550195", "home"=>"8785556851", "work"=>"4125550172"}]
+    search_array = {"value"=>"lan", "column"=>"lname"}
+    result = pull_records(search_array)
+    assert_equal(db_hash, result)
+  end
 
+  def test_68_verify_pull_record_via_street_address
+    db_hash = [{"id"=>"1", "fname"=>"John", "lname"=>"Doe", "addr"=>"606 Jacobs Street", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15220", "mobile"=>"4125550125", "home"=>"4125559816", "work"=>"4125550106"}]
+    search_array = {"value"=>"60", "column"=>"addr"}
+    result = pull_records(search_array)
+    assert_equal(db_hash, result)
+  end
 
+  def test_69_verify_pull_record_via_city
+    db_hash = [{"id"=>"8", "fname"=>"Jack", "lname"=>"Scott M.D.", "addr"=>"4168 University Drive", "city"=>"Mt. Lebanon", "state"=>"PA", "zip"=>"15216", "mobile"=>"4125550107", "home"=>"4125552529", "work"=>"4125550113"}]
+    search_array = {"value"=>"mt.", "column"=>"city"}
+    result = pull_records(search_array)
+    assert_equal(db_hash, result)
+  end
 
+  def test_70_verify_pull_record_via_zip
+    db_hash = [{"id"=>"4", "fname"=>"Jill", "lname"=>"Doe", "addr"=>"2294 Washington Avenue", "city"=>"Sewickley", "state"=>"PA", "zip"=>"15143", "mobile"=>"7245550136", "home"=>"7245551953", "work"=>"4125550150"}]
+    search_array = {"value"=>"143", "column"=>"zip"}
+    result = pull_records(search_array)
+    assert_equal(db_hash, result)
+  end
 
+  def test_71_verify_pull_two_records_via_mobile_phone_number
+    db_hash = [{"id"=>"7", "fname"=>"Jeff", "lname"=>"Langer", "addr"=>"2731 Platinum Drive", "city"=>"Monroeville", "state"=>"PA", "zip"=>"15140", "mobile"=>"8785550195", "home"=>"8785556851", "work"=>"4125550172"},
+               {"id"=>"10", "fname"=>"Joy", "lname"=>"Smith", "addr"=>"879 Shinn Avenue", "city"=>"Imperial", "state"=>"PA", "zip"=>"15071", "mobile"=>"7245550195", "home"=>"7245551579", "work"=>"4125550131"}]
+    search_array = {"value"=>"195", "column"=>"mobile"}
+    result = pull_records(search_array)
+    assert_equal(db_hash, result)
+  end
 
+  def test_72_verify_pull_records_via_work_phone_number
+    db_hash = [{"id"=>"7", "fname"=>"Jeff", "lname"=>"Langer", "addr"=>"2731 Platinum Drive", "city"=>"Monroeville", "state"=>"PA", "zip"=>"15140", "mobile"=>"8785550195", "home"=>"8785556851", "work"=>"4125550172"}]
+    search_array = {"value"=>"172", "column"=>"work"}
+    result = pull_records(search_array)
+    assert_equal(db_hash, result)
+  end
 
+  def test_73_verify_resulting_hash_for_update_record
+    formatted = {"fname"=>"Jake", "lname"=>"Robertson", "addr"=>"1328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+    entry_hash = {"fname"=>"jake", "lname"=>"robertson", "addr"=>"1328 oakdale drive", "city"=>"pittsburgh", "state"=>"pa", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+    result = write_db(entry_hash)
+    assert_equal(formatted, result)
+  end
 
-
-
-
-
-
-
-
+  # test delete_record() manually in phonebook_ops.rb sandbox test - breaks other unit tests
 
 end

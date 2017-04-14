@@ -1,5 +1,7 @@
 require 'pg'
-load "./methods/local_env.rb" if File.exists?("./methods/local_env.rb")
+load "./methods/local_env.rb" if File.exists?("./methods/local_env.rb")  # production version
+# load "../methods/local_env.rb" if File.exists?("../methods/local_env.rb")  # unit test & local version
+# load "./local_env.rb" if File.exists?("./local_env.rb")  # local version (if previous doesn't work)
 
 # Method to open a connection to the PostgreSQL database
 def open_db()
@@ -274,35 +276,9 @@ end
 # Sandbox testing
 #-----------------
 
-# entry_hash = {"fname"=>"jake", "lname"=>"roberts", "addr"=>"328 oakdale drive", "city"=>"pittsburgh", "state"=>"pa", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
-# p write_db(entry_hash)
-# {"fname"=>"Jake", "lname"=>"Roberts", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# run after unit tests, use DBeaver/PGAdmin to verify record deletion
+# id_hash_1 = {"id"=>"11"}
+# delete_record(id_hash_1)
 
-# hash_1 = {"id"=>"11", "fname"=>"jake l.", "lname"=>"robertson", "addr"=>"328 oak-dale dr.", "city"=>"pittsburgh", "state"=>"pa", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
-# p update_values(hash_1)
-# {"fname"=>"Jake L.", "lname"=>"Robertson", "addr"=>"328 Oak-Dale Dr.", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
-
-# hash_1 = {"fname"=>"jacob", "lname"=>"robert", "addr"=>"146 oakdale drive", "city"=>"pittsburgh", "state"=>"pa", "zip"=>"15213", "mobile"=>"4125558888", "home"=>"4125558349", "work"=>"4125556843", "id"=>"11"}
-# p update_values(hash_1)
-# {"fname"=>"Jacob", "lname"=>"Robert", "addr"=>"146 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125558888", "home"=>"4125558349", "work"=>"4125556843"}
-
-# hash_1 = {"fname"=>"jake", "lname"=>"roberts jr. m.d.", "id"=>"11", "addr"=>"328 oak dale drive", "city"=>"pittsburgh", "state"=>"pa", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
-# p update_values(hash_1)
-# {"fname"=>"Jake", "lname"=>"Roberts Jr. M.D.", "addr"=>"328 Oak Dale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
-
-# search_array = {"value"=>"something", "column"=>"fname"}
-# [{"addr"=>"No matching record - please try again."}]
-
-# search_array = {"value"=>"doe", "column"=>"lname"}
-# [{"id"=>"6", "fname"=>"Jen", "lname"=>"Doe", "addr"=>"3261 Michigan Avenue", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15222", "mobile"=>"7245550190", "home"=>"7245550624", "work"=>"7245550146"},
-#  {"id"=>"4", "fname"=>"Jill", "lname"=>"Doe", "addr"=>"2294 Washington Avenue", "city"=>"Sewickley", "state"=>"PA", "zip"=>"15143", "mobile"=>"7245550136", "home"=>"7245551953", "work"=>"4125550150"},
-#  {"id"=>"9", "fname"=>"Joe", "lname"=>"Doe", "addr"=>"2391 Losh Lane", "city"=>"Monroeville", "state"=>"PA", "zip"=>"15146", "mobile"=>"4125550184", "home"=>"4125554784", "work"=>"4125550166"},
-#  {"id"=>"1", "fname"=>"John", "lname"=>"Doe", "addr"=>"606 Jacobs Street", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15220", "mobile"=>"4125550125", "home"=>"4125559816", "work"=>"4125550106"}]
-
-# search_array = {"value"=>"do", "column"=>"lname"}
-# [{"id"=>"6", "fname"=>"Jen", "lname"=>"Doe", "addr"=>"3261 Michigan Avenue", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15222", "mobile"=>"7245550190", "home"=>"7245550624", "work"=>"7245550146"},
-#  {"id"=>"4", "fname"=>"Jill", "lname"=>"Doe", "addr"=>"2294 Washington Avenue", "city"=>"Sewickley", "state"=>"PA", "zip"=>"15143", "mobile"=>"7245550136", "home"=>"7245551953", "work"=>"4125550150"},
-#  {"id"=>"9", "fname"=>"Joe", "lname"=>"Doe", "addr"=>"2391 Losh Lane", "city"=>"Monroeville", "state"=>"PA", "zip"=>"15146", "mobile"=>"4125550184", "home"=>"4125554784", "work"=>"4125550166"},
-#  {"id"=>"1", "fname"=>"John", "lname"=>"Doe", "addr"=>"606 Jacobs Street", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15220", "mobile"=>"4125550125", "home"=>"4125559816", "work"=>"4125550106"}]
-
-# p pull_records(search_array)
+# id_hash_2 = {"id"=>"12"}
+# delete_record(id_hash_2)
