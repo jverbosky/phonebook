@@ -30,7 +30,7 @@ def get_entry(first_name, last_name)
                   and lname = '#{last_name}'")
     user_hash = conn.exec_prepared('q_statement')
     conn.exec("deallocate q_statement")
-    return user_hash[0]
+    user_hash.to_a.size > 0 ? (return user_hash[0]) : (return {})
   rescue PG::Error => e
     puts 'Exception occurred'
     puts e.message
@@ -69,8 +69,16 @@ def get_names()
   sorted = names.count > 3 ? rotate_names(names) : names  # rerrange names if more than 3 names
 end
 
+# Method to hold state appreviations
 def state_array
   %w(AK AL AR AZ CA CO CT DC DE FL GA HI IA ID IL IN KS KY LA MA MD ME MI MN MO MS MT NC ND NE NH NJ NM NV NY OH OK OR PA RI SC SD TN TX UT VA VT WA WI WV WY)
+end
+
+# Method to determine if entry is a duplicate or not
+def duplicate_entry?(entry_hash)
+  db_hash = get_entry(entry_hash["fname"], entry_hash["lname"])
+  difference = (entry_hash.to_a - db_hash.to_a).flatten
+  difference.size > 0 ? false : true
 end
 
 # Method to validate values prior to committing to database
@@ -78,34 +86,36 @@ def check_values(entry_hash)
   flag = 0
   feedback = ""
   detail = ""
+  flag = 1 if duplicate_entry?(entry_hash)
   entry_hash.each do |key, value|
-     flag = 1 if key == "fname" && value.length < 2
-     flag = 2 if key == "lname" && value.length < 2
-     flag = 3 if key == "addr" && value.split(" ").length < 3
-    (flag = 4; detail = key) if key =~ /fname|lname|addr/ && value.length > 50
-    (flag = 4; detail = key) if key == "city" && value.length > 25
-     flag = 5 if key == "city" && value.length < 2
-     flag = 6 if key == "zip" && value.length != 5
-    (flag = 7; detail = key) if key =~ /mobile|home|work/ && value.length != 10
-     flag = 8 if key == "state" && (!state_array.include? value.upcase)
-     flag = 9 if key =~ /fname|lname/ && value =~ /[^a-zA-Z.\- ]/
-     flag = 10 if key == "addr" && value =~ /[^0-9a-zA-z.\- ]/
-     flag = 11 if key == "city" && value =~ /[^a-zA-Z.\- ]/
-    (flag = 12; detail = key) if key =~ /zip|mobile|home|work/ && value =~ /[^0-9]/
+     flag = 2 if key == "fname" && value.length < 2
+     flag = 3 if key == "lname" && value.length < 2
+     flag = 4 if key == "addr" && value.split(" ").length < 3
+    (flag = 5; detail = key) if key =~ /fname|lname|addr/ && value.length > 50
+    (flag = 5; detail = key) if key == "city" && value.length > 25
+     flag = 6 if key == "city" && value.length < 2
+     flag = 7 if key == "zip" && value.length != 5
+    (flag = 8; detail = key) if key =~ /mobile|home|work/ && value.length != 10
+     flag = 9 if key == "state" && (!state_array.include? value.upcase)
+     flag = 10 if key =~ /fname|lname/ && value =~ /[^a-zA-Z.\- ]/
+     flag = 11 if key == "addr" && value =~ /[^0-9a-zA-z.\- ]/
+     flag = 12 if key == "city" && value =~ /[^a-zA-Z.\- ]/
+    (flag = 13; detail = key) if key =~ /zip|mobile|home|work/ && value =~ /[^0-9]/
   end
   case flag
-    when 1 then feedback = "The first name is too short - please enter at least two letters for the first name."
-    when 2 then feedback = "The last name is too short - please enter at least two letters for the last name."
-    when 3 then feedback = "Please specify a house number and a street name for the address."
-    when 4 then feedback = "The value for '#{detail}' is too long - please use a shorter value."
-    when 5 then feedback = "The city name is too short - please enter at least two letters for the city name."
-    when 6 then feedback = "Please enter five digits for the zip code."
-    when 7 then feedback = "Please enter ten digits for the #{detail} phone number."
-    when 8 then feedback = "Please use a valid two-letter abbreviation for the state name."
-    when 9 then feedback = "The name should only contain letters, hyphens or periods."
-    when 10 then feedback = "The street address should only contain numbers, letters, hyphens or periods."
-    when 11 then feedback = "The city name should only contain letters, hyphens or periods."
-    when 12 then feedback = "The value for '#{detail}' should only have numbers."
+    when 1 then feedback = "That entry already exists - please enter details for another entry."
+    when 2 then feedback = "The first name is too short - please enter at least two letters for the first name."
+    when 3 then feedback = "The last name is too short - please enter at least two letters for the last name."
+    when 4 then feedback = "Please specify a house number and a street name for the address."
+    when 5 then feedback = "The value for '#{detail}' is too long - please use a shorter value."
+    when 6 then feedback = "The city name is too short - please enter at least two letters for the city name."
+    when 7 then feedback = "Please enter five digits for the zip code."
+    when 8 then feedback = "Please enter ten digits for the #{detail} phone number."
+    when 9 then feedback = "Please use a valid two-letter abbreviation for the state name."
+    when 10 then feedback = "The name should only contain letters, hyphens or periods."
+    when 11 then feedback = "The street address should only contain numbers, letters, hyphens or periods."
+    when 12 then feedback = "The city name should only contain letters, hyphens or periods."
+    when 13 then feedback = "The value for '#{detail}' should only have numbers."
   end
   return feedback
 end
@@ -169,6 +179,9 @@ def write_db(entry_hash)
   ensure
     conn.close if conn
   end
+  formatted = {"fname" => v_fname, "lname" => v_lname, "addr" => v_addr,
+               "city" => v_city, "state" => v_state, "zip" => v_zip,
+               "mobile" => v_mobile, "home" => v_home, "work" => v_work}
 end
 
 # Method to return array of record hashes associated with specified value and column
@@ -200,6 +213,7 @@ end
 # - order is not important (the id can be anywhere in the hash)
 def update_values(entry_hash)
   id = entry_hash["id"]  # determine the id for the current record
+  formatted = {}
   begin
     conn = open_db() # open database for updating
     entry_hash.each do |column, value|  # iterate through entry_hash for each column/value pair
@@ -210,6 +224,7 @@ def update_values(entry_hash)
         conn.prepare('q_statement', query)
         rs = conn.exec_prepared('q_statement', [id, value])
         conn.exec("deallocate q_statement")
+        formatted[column] = value
       end
     end
   rescue PG::Error => e
@@ -218,6 +233,7 @@ def update_values(entry_hash)
   ensure
     conn.close if conn
   end
+  formatted
 end
 
 # Method to delete a record from the database
@@ -245,93 +261,119 @@ end
 # p get_entry("John", "Doe")
 # {"id"=>"1", "fname"=>"John", "lname"=>"Doe", "addr"=>"606 Jacobs Street", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15220", "mobile"=>"4125550125", "home"=>"4125559816", "work"=>"4125550106"}
 
-# entry_hash = {"fname"=>"Jake", "lname"=>"Roberts", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
-# write_db(entry_hash)
+# p get_entry("Jon", "Doe")
+# {}
+
+# entry_hash = {"fname"=>"John", "lname"=>"Doe", "addr"=>"606 Jacobs Street", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15220", "mobile"=>"4125550125", "home"=>"4125559816", "work"=>"4125550106"}
+# p duplicate_entry?(entry_hash)
+# true
+
+# entry_hash = {"fname"=>"Jon", "lname"=>"Doe", "addr"=>"606 Jacobs Street", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15220", "mobile"=>"4125550125", "home"=>"4125559816", "work"=>"4125550106"}
+# p duplicate_entry?(entry_hash)
+# false
+
+# entry_hash = {"fname"=>"John", "lname"=>"Doe", "addr"=>"8606 Jacobs Street", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15220", "mobile"=>"4125550125", "home"=>"4125559816", "work"=>"4125550106"}
+# p duplicate_entry?(entry_hash)
+# false
+
+# entry_hash = {"fname"=>"jake", "lname"=>"roberts", "addr"=>"328 oakdale drive", "city"=>"pittsburgh", "state"=>"pa", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# p write_db(entry_hash)
+# {"fname"=>"Jake", "lname"=>"Roberts", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
 
 # p get_names()
-# ["Doe, Jen", "Fairbanks, Jim Bob", "Smith, Joy", "Doe, Jill", "Langer, Jeff", "Smith, June", "Doe, Joe", "Scott M.D., Jack", "", "Doe, John", "Smith, Jane", ""]
+# ["Doe, Jen", "Fairbanks Jr., Jim Bob", "Smith, Jane C.", "Doe, Jill", "Langer, Jeff", "Smith, Joy", "Doe, John", "Roberts, Jake", "Smith-Lewis, June", "Doe III, Joe", "Scott M.D., Jack", ""]
 
-# hash_1 = {"id"=>"11", "fname"=>"Jake", "lname"=>"Robertson", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
-# hash_1 = {"fname"=>"Jacob", "lname"=>"Robert", "addr"=>"146 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125558888", "home"=>"4125558349", "work"=>"4125556843", "id"=>"11"}
-# hash_1 = {"fname"=>"Jake", "lname"=>"Roberts", "id"=>"11", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# hash_1 = {"id"=>"11", "fname"=>"jake l.", "lname"=>"robertson", "addr"=>"328 oak-dale dr.", "city"=>"pittsburgh", "state"=>"pa", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# p update_values(hash_1)
+# {"fname"=>"Jake L.", "lname"=>"Robertson", "addr"=>"328 Oak-Dale Dr.", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
 
-# update_values(hash_1)
+# hash_1 = {"fname"=>"jacob", "lname"=>"robert", "addr"=>"146 oakdale drive", "city"=>"pittsburgh", "state"=>"pa", "zip"=>"15213", "mobile"=>"4125558888", "home"=>"4125558349", "work"=>"4125556843", "id"=>"11"}
+# p update_values(hash_1)
+# {"fname"=>"Jacob", "lname"=>"Robert", "addr"=>"146 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125558888", "home"=>"4125558349", "work"=>"4125556843"}
 
-# hash_1 = {"fname"=>"larry", "lname"=>"something", "addr"=>"123 Lane Street", "city"=>"Asdf", "state"=>"PA", "zip"=>"12325", "mobile"=>"6549876540", "home"=>"6549873210", "work"=>"6543216548", "id"=>"15"}
-# hash_1 = {"fname"=>"lou", "lname"=>"something", "addr"=>"123 lane street", "city"=>"asdf", "state"=>"pa", "zip"=>"12325", "mobile"=>"6549876540", "home"=>"6549873210", "work"=>"6543216548", "id"=>"15"}
+# hash_1 = {"fname"=>"jake", "lname"=>"roberts jr. m.d.", "id"=>"11", "addr"=>"328 oak dale drive", "city"=>"pittsburgh", "state"=>"pa", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# p update_values(hash_1)
+# {"fname"=>"Jake", "lname"=>"Roberts Jr. M.D.", "addr"=>"328 Oak Dale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
 
-# update_values(hash_1)
+# New entry, no issues
+# hash_2 = {"fname"=>"New", "lname"=>"Entry", "addr"=>"1 A Street", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15220", "mobile"=>"4125551234", "home"=>"4125552345", "work"=>"4125553456"}
+# p check_values(hash_2)
+# ""
+
+# Duplicate entry
+# hash_3 = {"fname"=>"John", "lname"=>"Doe", "addr"=>"606 Jacobs Street", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15220", "mobile"=>"4125550125", "home"=>"4125559816", "work"=>"4125550106"}
+# p check_values(hash_3)
+# "That entry already exists - please enter details for another entry."
 
 # First name too short (1)
-# hash_2 = {"id"=>"11", "fname"=>"J", "lname"=>"Robertson", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# hash_4 = {"id"=>"11", "fname"=>"J", "lname"=>"Robertson", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# p check_values(hash_4)
 # "The name is too short - please enter at least two letters for the name."
 
 # First name too long (50+)
-# hash_3 = {"id"=>"11", "fname"=>"Jakeasdfasdfoiuyasdfoiuyasdfiouyasdfoiuyasdfiouyasdfoiuyasdfoiuyasdfoiuy", "lname"=>"Robertson", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# hash_5 = {"id"=>"11", "fname"=>"Jakeasdfasdfoiuyasdfoiuyasdfiouyasdfoiuyasdfiouyasdfoiuyasdfoiuyasdfoiuy", "lname"=>"Robertson", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# p check_values(hash_5)
 # "The value for 'fname' is too long - please try again with a shorter value."
 
 # Last name too short (1)
-# hash_4 = {"id"=>"11", "fname"=>"Jake", "lname"=>"R", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# hash_6 = {"id"=>"11", "fname"=>"Jake", "lname"=>"R", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# p check_values(hash_6)
 # "The name is too short - please enter at least two letters for the name."
 
 # Last name too long (50+)
-# hash_5 = {"id"=>"11", "fname"=>"Jake", "lname"=>"Robertsonasdfoiuyasdfoiuyasdfoiuyasdfoiuyasdfoiuyasdfoiasdfpoiu", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# hash_7 = {"id"=>"11", "fname"=>"Jake", "lname"=>"Robertsonasdfoiuyasdfoiuyasdfoiuyasdfoiuyasdfoiuyasdfoiasdfpoiu", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# p check_values(hash_7)
 # "The value for 'lname' is too long - please try again with a shorter value."
 
 # Address too short (2 words)
-# hash_6 = {"id"=>"11", "fname"=>"Jake", "lname"=>"Robertson", "addr"=>"328 Oakdale", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# hash_8 = {"id"=>"11", "fname"=>"Jake", "lname"=>"Robertson", "addr"=>"328 Oakdale", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# p check_values(hash_8)
 # "Please specify a house number and a street name for the address."
 
 # Address too long (50+)
-# hash_7 = {"id"=>"11", "fname"=>"Jake", "lname"=>"Robertson", "addr"=>"328 Oakdale Driveasdfoiuyasdfoiuyasdfoiuyasdfoiuyasdfoiuyasdfoiuyasdfoiuy", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# hash_9 = {"id"=>"11", "fname"=>"Jake", "lname"=>"Robertson", "addr"=>"328 Oakdale Driveasdfoiuyasdfoiuyasdfoiuyasdfoiuyasdfoiuyasdfoiuyasdfoiuy", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# p check_values(hash_9)
 # "The value for 'addr' is too long - please try again with a shorter value."
 
 # City too long (25+)
-# hash_8 = {"id"=>"11", "fname"=>"Jake", "lname"=>"Robertson", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburghasdfoiuyasdfoiuyasdfoiuyasdfoiuyasdfoiuyasdfoiuyasdfoiuyasdfoiuy", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# hash_10 = {"id"=>"11", "fname"=>"Jake", "lname"=>"Robertson", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburghasdfoiuyasdfoiuyasdfoiuyasdfoiuyasdfoiuyasdfoiuyasdfoiuyasdfoiuy", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# p check_values(hash_10)
 # "The value for 'city' is too long - please try again with a shorter value."
 
 # State too long (2+)
-# hash_9 = {"id"=>"11", "fname"=>"Jake", "lname"=>"Robertson", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"Pennsylvania", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# hash_11 = {"id"=>"11", "fname"=>"Jake", "lname"=>"Robertson", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"Pennsylvania", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# p check_values(hash_11)
 # "Please use the two-letter abbreviation for the state name."
 
 # Zip too short (4)
-# hash_10 = {"id"=>"11", "fname"=>"Jake", "lname"=>"Robertson", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"1521", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# hash_12 = {"id"=>"11", "fname"=>"Jake", "lname"=>"Robertson", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"1521", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# p check_values(hash_12)
 # "Please enter five digits for the zip code."
 
 # Zip too long (5+)
-# hash_11 = {"id"=>"11", "fname"=>"Jake", "lname"=>"Robertson", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"152136", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# hash_13 = {"id"=>"11", "fname"=>"Jake", "lname"=>"Robertson", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"152136", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# p check_values(hash_13)
 # "Please enter five digits for the zip code."
 
 # Mobile too short (9)
-# hash_12 = {"id"=>"11", "fname"=>"Jake", "lname"=>"Robertson", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"412555590", "home"=>"4125558349", "work"=>"4125556843"}
+# hash_14 = {"id"=>"11", "fname"=>"Jake", "lname"=>"Robertson", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"412555590", "home"=>"4125558349", "work"=>"4125556843"}
+# p check_values(hash_14)
 # "Please enter ten digits for the mobile phone number."
 
 # Work too long (10+)
-# hash_13 = {"id"=>"11", "fname"=>"Jake", "lname"=>"Robertson", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"41255568435"}
+# hash_15 = {"id"=>"11", "fname"=>"Jake", "lname"=>"Robertson", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"41255568435"}
+# p check_values(hash_15)
 # "Please enter ten digits for the mobile phone number."
 
 # Non-letters in first name
-# hash_14 = {"id"=>"11", "fname"=>"Jake2", "lname"=>"Robertson", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# hash_16 = {"id"=>"11", "fname"=>"Jake2", "lname"=>"Robertson", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+# p check_values(hash_16)
 # "Your name should only contain letters - please try again."
 
 # Non-numbers in mobile
-# hash_15 = {"id"=>"11", "fname"=>"Jake", "lname"=>"Robertson", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"412-555-7359", "home"=>"4125558349", "work"=>"4125556843"}
+# hash_17 = {"id"=>"11", "fname"=>"Jake", "lname"=>"Robertson", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"412-555-7359", "home"=>"4125558349", "work"=>"4125556843"}
+# p check_values(hash_17)
 # "The value for 'mobile' should only have numbers - please try again."
-
-# p check_values(hash_2)
-# p check_values(hash_3)
-# p check_values(hash_4)
-# p check_values(hash_5)
-# p check_values(hash_6)
-# p check_values(hash_7)
-# p check_values(hash_8)
-# p check_values(hash_9)
-# p check_values(hash_10)
-# p check_values(hash_11)
-# p check_values(hash_12)
-# p check_values(hash_13)
-# p check_values(hash_14)
-# p check_values(hash_15)
 
 # p capitalize_initials("m.b.a.")  # M.B.A.
 
