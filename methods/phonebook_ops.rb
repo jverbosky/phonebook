@@ -274,15 +274,6 @@ end
 # Sandbox testing
 #-----------------
 
-# p open_db()
-# #<PG::Connection:0x1a5f698>
-
-# p get_entry("John", "Doe")
-# {"id"=>"1", "fname"=>"John", "lname"=>"Doe", "addr"=>"606 Jacobs Street", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15220", "mobile"=>"4125550125", "home"=>"4125559816", "work"=>"4125550106"}
-
-# p get_entry("Jon", "Doe")
-# {}
-
 # entry_hash = {"fname"=>"John", "lname"=>"Doe", "addr"=>"606 Jacobs Street", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15220", "mobile"=>"4125550125", "home"=>"4125559816", "work"=>"4125550106"}
 # p duplicate_entry?(entry_hash)
 # true
