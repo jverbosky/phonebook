@@ -298,9 +298,6 @@ end
 # p write_db(entry_hash)
 # {"fname"=>"Jake", "lname"=>"Roberts", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
 
-# p get_names()
-# ["Doe, Jen", "Fairbanks Jr., Jim Bob", "Smith, Jane C.", "Doe, Jill", "Langer, Jeff", "Smith, Joy", "Doe, John", "Roberts, Jake", "Smith-Lewis, June", "Doe III, Joe", "Scott M.D., Jack", ""]
-
 # hash_1 = {"id"=>"11", "fname"=>"jake l.", "lname"=>"robertson", "addr"=>"328 oak-dale dr.", "city"=>"pittsburgh", "state"=>"pa", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
 # p update_values(hash_1)
 # {"fname"=>"Jake L.", "lname"=>"Robertson", "addr"=>"328 Oak-Dale Dr.", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
@@ -397,35 +394,6 @@ end
 # hash_18 = {"id"=>"11", "fname"=>"Jake", "lname"=>"Robertson", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"412-555-7359", "home"=>"4125558349", "work"=>"4125556843"}
 # p check_values(hash_18)
 # "The value for 'mobile' should only have numbers - please try again."
-
-# p capitalize_initials("m.b.a.")  # M.B.A.
-
-# p capitalize_items("jake")  # Jake
-# p capitalize_items("Jake")  # Jake
-# p capitalize_items("JAKE")  # Jake
-# p capitalize_items("Long City Name")  # Long City Name
-# p capitalize_items("long city name")  # Long City Name
-# p capitalize_items("LONG CITY NAME")  # Long City Name
-# p capitalize_items("D.C.")  # D.C.
-# p capitalize_items("d.c.")  # D.C.
-# p capitalize_items("D.C. Highway")  # D.C. Highway
-# p capitalize_items("d.c. highway")  # D.C. Highway
-# p capitalize_items("D.C. HIGHWAY")  # D.C. Highway
-# p capitalize_items("Annie D.E. Grant M.B.A")  # Annie D.E. Grant M.B.A
-# p capitalize_items("annie d.e. grant m.b.a.")  # Annie D.E. Grant M.B.A
-# p capitalize_items("ANNIE D.E. GRANT M.B.A")  # Annie D.E. Grant M.B.A
-# p capitalize_items("Dr. Smith")  # Dr. Smith
-# p capitalize_items("dr. smith")  # Dr. Smith
-# p capitalize_items("DR. SMITH")  # Dr. Smith
-# p capitalize_items("103 Sunshine Lane")  # 103 Sunshine Lane
-# p capitalize_items("103 sunshine lane")  # 103 Sunshine Lane
-# p capitalize_items("103 SUNSHINE LANE")  # 103 Sunshine Lane
-# p capitalize_items("jessica c. smith-hayer")  # Jessica C. Smith-Hayer
-# p capitalize_items("Jessica C. Smith-Hayer")  # Jessica C. Smith-Hayer
-# p capitalize_items("JESSICA C. SMITH-HAYER")  # Jessica C. Smith-Hayer
-# p capitalize_items("523 here-you-are st.")  # 523 Here-You-Are St.
-# p capitalize_items("523 Here-You-Are St.")  # 523 Here-You-Are St.
-# p capitalize_items("523 HERE-YOU-ARE ST.")  # 523 Here-You-Are St.
 
 # search_array = {"value"=>"something", "column"=>"fname"}
 # [{"addr"=>"No matching record - please try again."}]
