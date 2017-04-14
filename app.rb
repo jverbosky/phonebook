@@ -1,6 +1,6 @@
 require 'sinatra'
 require 'pg'
-require_relative 'phonebook_ops.rb'
+require_relative './methods/phonebook_ops.rb'
 
 class PhonebookApp < Sinatra::Base
 
