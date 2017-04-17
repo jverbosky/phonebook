@@ -8,7 +8,7 @@ begin
   # user data sets
   entry_1 = ["John", "Doe", "606 Jacobs Street", "Pittsburgh", "PA", 15220, 4125550125, 4125559816, 4125550106]
   entry_2 = ["Jane C.", "Smith", "3974 Riverside Drive", "Monroeville", "PA", 15146, 8785550101, 8785557000, 4125550197]
-  entry_3 = ["Jim Bob", "Fairbanks Jr.", "3801 Beechwood Drive", "Wexford", "PA", 15090, 4125550167, 4125553878, 7245550133]
+  entry_3 = ["Jim Bob", "Fairbanks Jr.", "3801 Beechwood Drive", "Wexford", "PA", 15090, 4125550167, 4125553878, ""]
   entry_4 = ["Jill", "Doe", "2294 Washington Avenue", "Sewickley", "PA", 15143, 7245550136, 7245551953, 4125550150]
   entry_5 = ["June", "Smith-Lewis", "3210 North-West Street", "Imperial", "PA", 15126, 4125550163, 4125557989, 4125550198]
   entry_6 = ["Jen", "Doe", "3261 Michigan Avenue", "Pittsburgh", "PA", 15222, 7245550190, 7245550624, 7245550146]

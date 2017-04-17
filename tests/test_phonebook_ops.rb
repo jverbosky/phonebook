@@ -1,6 +1,9 @@
 # !NOTE!
 # - need to use the unit test version of load local_env.rb for unit tests to work
 
+# Tip - to run the test with a specific seed value (i.e. one that is failing):
+#   ruby .\test_phonebook_ops.rb --seed 6666
+
 require "minitest/autorun"
 require_relative "../methods/phonebook_ops.rb"
 load "../methods/1_drop_and_create_tables.rb"  # run the script to drop tables
@@ -52,8 +55,9 @@ class TestPhonebookOps < Minitest::Test
   # need to provide array of names at all states (initial seeding, after writing to db, after updating record in db)
   def test_7_verify_get_names_from_db
     user_array = get_names()
-    names = [["Doe, Jen", "Fairbanks Jr., Jim Bob", "Smith, Jane C.", "Doe, Jill", "Langer, Jeff", "Smith, Joy", "Doe, John", "Roberts, Jake", "Smith-Lewis, June", "Doe III, Joe", "Scott M.D., Jack", ""],
-             ["Doe, Jen", "Fairbanks Jr., Jim Bob", "Smith, Joy", "Doe, Jill", "Langer, Jeff", "Smith-Lewis, June", "Doe, John", "Scott M.D., Jack", "", "Doe III, Joe", "Smith, Jane C.", ""],
+    names = [["Doe, Jen", "Fairbanks Jr., Jim Bob", "Smith, Joy", "Doe, Jill", "Langer, Jeff", "Smith-Lewis, June", "Doe, John", "Scott M.D., Jack", "", "Doe III, Joe", "Smith, Jane C.", ""],
+             ["Doe, Jen", "Fairbanks Jr., Jim Bob", "Smith, Jane C.", "Doe, Jill", "Langer, Jeff", "Smith, Joy", "Doe, John", "Roberts, Jake", "Smith-Lewis, June", "Doe III, Joe", "Scott M.D., Jack", ""],
+             ["Doe, Jen", "Fairbanks Jr., Jim Bob", "Smith, Jane C.", "Doe, Jill", "Langer, Jeff", "Smith, Joy", "Doe, John", "Robertson, Jake", "Smith-Lewis, June", "Doe III, Joe", "Scott M.D., Jack", ""],
              ["Doe, Jen", "Fairbanks Jr., Jim Bob", "Scott M.D., Jack", "Doe, Jill", "Langer, Jeff", "Smith, Jane C.", "Doe, John", "Roberts, Jake", "Smith, Joy", "Doe III, Joe", "Robertson, Jake", "Smith-Lewis, June"]]
     result = names.include? user_array
     assert_equal(true, result)
@@ -422,9 +426,9 @@ class TestPhonebookOps < Minitest::Test
     assert_equal(feedback, result)
   end
 
-  def test_65_verify_resulting_hash_for_write_db
-    formatted = {"fname"=>"Jake", "lname"=>"Roberts", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
-    entry_hash = {"fname"=>"jake", "lname"=>"roberts", "addr"=>"328 oakdale drive", "city"=>"pittsburgh", "state"=>"pa", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+  def test_65_verify_resulting_hash_for_write_db_empty_work_phone
+    formatted = {"fname"=>"Jake", "lname"=>"Roberts", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>""}
+    entry_hash = {"fname"=>"jake", "lname"=>"roberts", "addr"=>"328 oakdale drive", "city"=>"pittsburgh", "state"=>"pa", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>""}
     result = write_db(entry_hash)
     assert_equal(formatted, result)
   end
@@ -479,9 +483,30 @@ class TestPhonebookOps < Minitest::Test
     assert_equal(db_hash, result)
   end
 
-  def test_73_verify_resulting_hash_for_update_record
-    formatted = {"fname"=>"Jake", "lname"=>"Robertson", "addr"=>"1328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
-    entry_hash = {"fname"=>"jake", "lname"=>"robertson", "addr"=>"1328 oakdale drive", "city"=>"pittsburgh", "state"=>"pa", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+  def test_73_verify_pull_records_via_empty_work_phone_number
+    db_hash = [{"id"=>"3", "fname"=>"Jim Bob", "lname"=>"Fairbanks Jr.", "addr"=>"3801 Beechwood Drive", "city"=>"Wexford", "state"=>"PA", "zip"=>"15090", "mobile"=>"4125550167", "home"=>"4125553878", "work"=>""}]
+    search_array = {"value"=>"", "column"=>"work"}
+    result = pull_records(search_array)
+    assert_equal(db_hash, result)
+  end
+
+  def test_74_verify_feedback_for_empty_search_on_first_name_no_results
+    db_hash = [{"addr" => "No matching record - please try again."}]
+    search_array = {"value"=>"", "column"=>"fname"}
+    result = pull_records(search_array)
+    assert_equal(db_hash, result)
+  end
+
+  def test_75_verify_feedback_for_populated_search_on_last_name_no_results
+    db_hash = [{"addr" => "No matching record - please try again."}]
+    search_array = {"value"=>"Lastname", "column"=>"lname"}
+    result = pull_records(search_array)
+    assert_equal(db_hash, result)
+  end
+
+  def test_76_verify_resulting_hash_for_update_record_empty_mobile
+    formatted = {"fname"=>"Jake", "lname"=>"Robertson", "addr"=>"1328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"", "home"=>"4125558349", "work"=>"4125556843"}
+    entry_hash = {"fname"=>"jake", "lname"=>"robertson", "addr"=>"1328 oakdale drive", "city"=>"pittsburgh", "state"=>"pa", "zip"=>"15213", "mobile"=>"", "home"=>"4125558349", "work"=>"4125556843"}
     result = write_db(entry_hash)
     assert_equal(formatted, result)
   end
