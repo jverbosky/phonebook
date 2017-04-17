@@ -1,3 +1,6 @@
+# !NOTE!
+# - need to use the unit test version of load local_env.rb for unit tests to work
+
 require "minitest/autorun"
 require_relative "../methods/phonebook_ops.rb"
 load "../methods/1_drop_and_create_tables.rb"  # run the script to drop tables
