@@ -212,12 +212,20 @@ def pull_records(search_array)
   results = []  # array to hold all matching hashes
   begin
     conn = open_db()
-    query = "select *
-             from listings
-             where " + column + " ilike $1
-             order by lname, fname"
-    conn.prepare('q_statement', query)
-    rs = conn.exec_prepared('q_statement', ["%" + value + "%"])
+    unless value == ""
+      query = "select *
+               from listings
+               where " + column + " ilike $1
+               order by lname, fname"
+      conn.prepare('q_statement', query)
+      rs = conn.exec_prepared('q_statement', ["%" + value + "%"])
+    else
+      query = "select *
+               from listings
+               where " + column + " = ''"
+      conn.prepare('q_statement', query)
+      rs = conn.exec_prepared('q_statement')
+    end
     conn.exec("deallocate q_statement")
   rescue PG::Error => e
     puts 'Exception occurred'
