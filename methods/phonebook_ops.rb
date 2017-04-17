@@ -1,6 +1,6 @@
 require 'pg'
-# load "./methods/local_env.rb" if File.exists?("./methods/local_env.rb")  # production version
-load "../methods/local_env.rb" if File.exists?("../methods/local_env.rb")  # unit test & local version
+load "./methods/local_env.rb" if File.exists?("./methods/local_env.rb")  # production version
+# load "../methods/local_env.rb" if File.exists?("../methods/local_env.rb")  # unit test & local version
 # load "./local_env.rb" if File.exists?("./local_env.rb")  # local version (if previous doesn't work)
 
 # Method to open a connection to the PostgreSQL database
