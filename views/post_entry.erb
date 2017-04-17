@@ -1,23 +1,52 @@
+<!-- format phone numbers -->
+
+<% unless entry_hash["mobile"].length == 0 %>
+  <% m_format = "(" + entry_hash["mobile"][0, 3] + ") " + entry_hash["mobile"][3, 3] + "-" + entry_hash["mobile"][6, 4] %>
+<% else %>
+  <% m_format = "" %>
+<% end %>
+
+<% h_format = "(" + entry_hash["home"][0, 3] + ") " + entry_hash["home"][3, 3] + "-" + entry_hash["home"][6, 4] %>
+
+<% unless entry_hash["work"].length == 0 %>
+  <% w_format = "(" + entry_hash["work"][0, 3] + ") " + entry_hash["work"][3, 3] + "-" + entry_hash["work"][6, 4] %>
+<% else %>
+  <% w_format = "" %>
+<% end %>
+
 <div>
 
-<% m_format = "(" + entry_hash["mobile"][0, 3] + ") " + entry_hash["mobile"][3, 3] + "-" + entry_hash["mobile"][6, 4] %>
-<% h_format = "(" + entry_hash["home"][0, 3] + ") " + entry_hash["home"][3, 3] + "-" + entry_hash["home"][6, 4] %>
-<% w_format = "(" + entry_hash["work"][0, 3] + ") " + entry_hash["work"][3, 3] + "-" + entry_hash["work"][6, 4] %>
-
-<% if entry_hash.key?("id") %>
-  <h4>Details for <%= entry_hash["fname"] %> <%= entry_hash["lname"] %> have been updated!</h4>
-<% else %>
-  <h4>Details for <%= entry_hash["fname"] %> <%= entry_hash["lname"] %> have been added!</h4>
-<% end %>
+  <% if entry_hash.key?("id") %>
+    <h4>Details for <%= entry_hash["fname"] %> <%= entry_hash["lname"] %> have been updated!</h4>
+  <% else %>
+    <h4>Details for <%= entry_hash["fname"] %> <%= entry_hash["lname"] %> have been added!</h4>
+  <% end %>
 
   <hr>
 
-  <div>
-    <p><b>Name: </b><%= entry_hash["lname"] %>, <%= entry_hash["fname"] %></p>
-    <p><b>Address: </b><%= entry_hash["addr"] %>, <%= entry_hash["city"] %> <%= entry_hash["state"] %> <%= entry_hash["zip"] %></p>
-    <p><b>Mobile: </b><%= m_format %></p>
-    <p><b>Home: </b><%= h_format %></p>
-    <p><b>Work: </b><%= w_format %></p>
+  <div class="padding">
+    <table>
+      <tr>
+        <td class="result"><p><b>Name: </b></p></td>
+        <td class="padding-td"><p><%= entry_hash["lname"] %>, <%= entry_hash["fname"] %></p></td>
+      </tr>
+      <tr>
+        <td class="result"><p><b>Address: </b></p></td>
+        <td class="padding-td"><p><%= entry_hash["addr"] %>, <%= entry_hash["city"] %> <%= entry_hash["state"] %> <%= entry_hash["zip"] %></p></td>
+      </tr>
+      <tr>
+        <td class="result"><p><b>Mobile: </b></p></td>
+        <td class="padding-td"><p><%= m_format %></p></td>
+      </tr>
+      <tr>
+        <td class="result"><p><b>Home: </b></p></td>
+        <td class="padding-td"><p><%= h_format %></p></td>
+      </tr>
+      <tr>
+        <td class="result"><p><b>Work: </b></p></td>
+        <td class="padding-td"><p><%= w_format %></p></td>
+      </tr>
+    </table>
   </div>
 
   <hr>

@@ -150,7 +150,7 @@ def check_values(entry_hash)
     (flag = 5; detail = column) if column == "city" && value.length > 25
      flag = 6 if column == "city" && value.length < 2
      flag = 7 if column == "zip" && value.length != 5
-    (flag = 8; detail = column) if column =~ /mobile|home|work/ && value.length != 10
+    (flag = 8; detail = column) if column =~ /mobile|home|work/ && value.length.to_s !~ /0|10/
      flag = 9 if column == "state" && (!state_array.include? value.upcase)
      flag = 10 if column =~ /fname|lname/ && value =~ /[^a-zA-Z.\- ]/
      flag = 11 if column == "addr" && value =~ /[^0-9a-zA-z.\- ]/

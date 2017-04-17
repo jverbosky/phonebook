@@ -54,6 +54,10 @@ tr:nth-child(odd) {
   padding: 10px;
 }
 
+.padding-td {
+  padding: 8px;
+}
+
 .margin {
   margin: 10px;
 }
@@ -86,7 +90,7 @@ tr:nth-child(odd) {
   padding: 8px;
 }
 
-.results {
+.result {
   vertical-align: top;
   padding: 8px;
 }

@@ -1,7 +1,18 @@
 <!-- format phone numbers -->
-<% m_format = "(" + entry_hash["mobile"][0, 3] + ") " + entry_hash["mobile"][3, 3] + "-" + entry_hash["mobile"][6, 4] %>
+
+<% unless entry_hash["mobile"].length == 0 %>
+  <% m_format = "(" + entry_hash["mobile"][0, 3] + ") " + entry_hash["mobile"][3, 3] + "-" + entry_hash["mobile"][6, 4] %>
+<% else %>
+  <% m_format = "" %>
+<% end %>
+
 <% h_format = "(" + entry_hash["home"][0, 3] + ") " + entry_hash["home"][3, 3] + "-" + entry_hash["home"][6, 4] %>
-<% w_format = "(" + entry_hash["work"][0, 3] + ") " + entry_hash["work"][3, 3] + "-" + entry_hash["work"][6, 4] %>
+
+<% unless entry_hash["work"].length == 0 %>
+  <% w_format = "(" + entry_hash["work"][0, 3] + ") " + entry_hash["work"][3, 3] + "-" + entry_hash["work"][6, 4] %>
+<% else %>
+  <% w_format = "" %>
+<% end %>
 
 <div>
 
