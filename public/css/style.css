@@ -94,3 +94,19 @@ tr:nth-child(odd) {
   vertical-align: top;
   padding: 8px;
 }
+
+.navbar-default {
+  background-color: #f4e842;
+}
+
+.navbar-toggle {
+  background-color: #000000;
+}
+
+.icon-bar {
+  color: #f4e842;
+}
+
+.navbar-default .navbar-toggle .icon-bar {
+  background-color: #f4e842;
+}

@@ -3,22 +3,43 @@
   <head>
     <title>Phonebook</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css'>
-    <link rel="stylesheet" href="style.css">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"> -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/jasny-bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
     <link rel="icon" href="/images/favicon.ico?" type="image/x-icon">
   </head>
   <body>
-    <header>
-      <a href="https://www.linkedin.com/in/johnverbosky" target="_blank"><h1>Phonebook</h1></a>
-    </header>
-    <section>
-    <div class="container-fluid">
-      <div class="center-block">
-        <hr>
-        <%= yield %>
-      </div>
+
+   <div class="navmenu navmenu-default navmenu-fixed-left offcanvas">
+      <a class="navmenu-brand" href="/">Phonebook</a>
+      <ul class="nav navmenu-nav">
+        <li class="active"><a href="/get_entry">Add an entry</a></li>
+        <li><a href="/list_entries">List all entries</a></li>
+        <li><a href="/get_search">Search entries</a></li>
+      </ul>
     </div>
-    </section>
+
+    <div class="navbar navbar-default navbar-fixed-top">
+      <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target=".navmenu" data-canvas="body">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+
+    <div class="container">
+      <div>
+        <a href="https://www.linkedin.com/in/johnverbosky" target="_blank"><h1>Phonebook</h1></a>
+      </div>
+      <hr>
+      <%= yield %>
+    </div><!-- /.container -->
+
+    <!-- JS scripts placed at end so page loads faster -->
+    <script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/jasny-bootstrap.min.js"></script>
+
   </body>
 </html>
