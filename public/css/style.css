@@ -4,11 +4,11 @@ body {
   color: #000000;
 }
 
-div {
+/*centered-div {
   display: table;
   margin: 0 auto;
-  max-width: 600px;
-}
+  max-width: 300px;
+}*/
 
 h1 {
   text-align: center;
@@ -29,7 +29,7 @@ h5 {
 
 hr {
   height: 1px;
-  width: 450px;
+  width: 300px;
   border-top: 1px solid #000000;
   margin-top: 5px;
   margin-bottom: 5px;
@@ -95,18 +95,22 @@ tr:nth-child(odd) {
   padding: 8px;
 }
 
-.navbar-default {
-  background-color: #f4e842;
+.navbar {
+  background-color: #ffff00;
 }
 
-.navbar-toggle {
-  background-color: #000000;
+.navbar-brand {
+  padding: 5px 5px;
 }
 
-.icon-bar {
-  color: #f4e842;
+.red {
+  background-color: red;
 }
 
-.navbar-default .navbar-toggle .icon-bar {
-  background-color: #f4e842;
+.blue {
+  background-color: blue;
+}
+
+.green {
+  background-color: green;
 }

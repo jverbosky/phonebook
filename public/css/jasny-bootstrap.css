@@ -183,7 +183,7 @@
 .navbar-offcanvas .navbar-nav {
   margin: 0;
 }
-@media (min-width: 768px) {
+@media (max-width: 600px) {
   .navbar-offcanvas {
     width: auto;
     border-top: 0;
