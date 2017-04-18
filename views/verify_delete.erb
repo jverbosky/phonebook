@@ -1,23 +1,18 @@
 <div>
 
   <h3><b>Confirmation Required</b></h3>
-  <h4>Click <b>Delete</b> to delete the record for <%= entry_hash["fname"] %> <%= entry_hash["lname"] %>.</h4>
-
-  <form method = "post" action = "delete_info">
-    <input type = "hidden" name = "id[id]" value = "<%= entry_hash["id"] %>">
-    <div class = "button">
-      <input class="button-color" type = "submit" value = "Delete">
-    </div>
-  </form>
-
   <hr>
+  <h4>Click <b>Confirm</b> to delete the record for <%= entry_hash["fname"] %> <%= entry_hash["lname"] %>.</h4>
 
-  <h4>Otherwise, please select one of the following:</h4>
-
-  <div class="padding">
-    <p><a href = "/get_entry">Create a new entry</a></p>
-    <p><a href = "/list_entries">View a listing of existing entries</a></p>
-    <p><a href = "/get_search">Update or delete an existing entry</a></p>
+  <div class="center-block">
+    <div class="padding col-sm-12">
+      <form  method="post" action="delete_info">
+        <input type="hidden" name="id[id]" value="<%= entry_hash["id"] %>">
+        <div class="text-center">
+          <button class="btn btn-default" type="submit">Confirm</button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <hr>

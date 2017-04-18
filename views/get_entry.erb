@@ -1,58 +1,74 @@
-<div>
+<div class="col-sm-4"></div>  <!-- for centering main div -->
 
-  <h4>Enter the requested details and click <b>Submit</b>:</h4>
-
-  <div class = "padding">
-    <form  method = "post" action = "post_entry">
-      <table>
-        <tr>
-          <td class= "wide"><b>First Name: </b></td>
-          <td class= "wide"><input type = "text" name = "entry[fname]" value = "<%= entry_hash["fname"] %>" required></td>
-        </tr>
-        <tr>
-          <td class= "wide"><b>Last Name: </b></td>
-          <td class= "wide"><input type = "text" name = "entry[lname]" value = "<%= entry_hash["lname"] %>" required></td>
-        </tr>
-        <tr>
-          <td class= "wide"><b>Street Address: </b></td>
-          <td class= "wide"><input type = "text" name = "entry[addr]" value = "<%= entry_hash["addr"] %>" required></td>
-        </tr>
-        <tr>
-          <td class= "wide"><b>City: </b></td>
-          <td class= "wide"><input type = "text" name = "entry[city]" value = "<%= entry_hash["city"] %>" required></td>
-        </tr>
-        <tr>
-          <td class= "wide"><b>State Abbreviation: </b></td>
-          <td class= "wide"><input type = "text" name = "entry[state]" value = "<%= entry_hash["state"] %>" required></td>
-        </tr>
-        <tr>
-          <td class= "wide"><b>Zip Code: </b></td>
-          <td class= "wide"><input type = "text" name = "entry[zip]" value = "<%= entry_hash["zip"] %>" required></td>
-        </tr>
-        <tr>
-          <td class= "wide"><b>Mobile Phone Number: </b></td>
-          <td class= "wide"><input type = "text" name = "entry[mobile]" value = "<%= entry_hash["mobile"] %>"></td>
-        </tr>
-        <tr>
-          <td class= "wide"><b>Home Phone Number: </b></td>
-          <td class= "wide"><input type = "text" name = "entry[home]" value = "<%= entry_hash["home"] %>" required></td>
-        </tr>
-        <tr>
-          <td class= "wide"><b>Work Phone Number: </b></td>
-          <td class= "wide"><input type = "text" name = "entry[work]" value = "<%= entry_hash["work"] %>"></td>
-        </tr>
-      </table>
-      <div class = "button">
-        <input class="button-color" type = "submit">
-      </div>
-    </form>
-  </div>
-
-  <hr>
+<div class="col-sm-4">
 
   <!-- only populated if data validation issues -->
   <div class="feedback">
     <p><i><%= feedback %></i></p>
   </div>
 
+  <div class="center-block">
+    <form method="post" action="post_entry">
+      <div class="form-group row">
+        <label class="col-sm-5 col-form-label">First Name</label>
+        <div class="col-sm-7">
+          <input class="form-control" type="text" name="entry[fname]" value="<%= entry_hash["fname"] %>" required>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-5 col-form-label">Last Name</label>
+        <div class="col-sm-7">
+          <input class="form-control" type="text" name="entry[lname]" value="<%= entry_hash["lname"] %>" required>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-5 col-form-label">Street Address</label>
+        <div class="col-sm-7">
+          <input class="form-control" type="text" name="entry[addr]" value="<%= entry_hash["addr"] %>" required>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-5 col-form-label">City</label>
+        <div class="col-sm-7">
+          <input class="form-control" type="text" name="entry[city]" value="<%= entry_hash["city"] %>" required>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-5 col-form-label">State</label>
+        <div class="col-sm-7">
+          <input class="form-control" type="text" name="entry[state]" value="<%= entry_hash["state"] %>" required>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-5 col-form-label">Zip Code</label>
+        <div class="col-sm-7">
+          <input class="form-control" type="text" name="entry[zip]" value="<%= entry_hash["zip"] %>" required>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-5 col-form-label">Mobile Phone</label>
+        <div class="col-sm-7">
+          <input class="form-control" type="text" name="entry[mobile]" value="<%= entry_hash["mobile"] %>">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-5 col-form-label">Home Phone</label>
+        <div class="col-sm-7">
+          <input class="form-control" type="text" name="entry[home]" value="<%= entry_hash["home"] %>" required>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-5 col-form-label">Work Phone</label>
+        <div class="col-sm-7">
+          <input class="form-control" type="text" name="entry[work]" value="<%= entry_hash["work"] %>">
+        </div>
+      </div>
+      <div class="text-center">
+        <button class="btn btn-default" type="submit">Submit</button>
+      </div>
+    </form>
+  </div>
+
 </div>
+
+<div class="col-sm-4"></div>  <!-- for centering main div -->
