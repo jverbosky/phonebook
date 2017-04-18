@@ -1,53 +1,59 @@
-<div>
+<div class="col-sm-3"></div>  <!-- for centering main div -->
 
-  <h4>Please select the desired record:</h4>
+<div class="col-sm-6">
+
+  <h4>Select the desired record</h4>
 
   <div class="padding">
     <!-- dynamic table to list all users in phonebook -->
-    <table>
-      <tr>
-        <td class="result"><b>Last</b></td>
-        <td class="result"><b>First</b></td>
-        <td class="result"><b>Address</b></td>
-        <td class="result"><b>City</b></td>
-        <td class="result"><b>State</b></td>
-        <td class="result"><b>Zip</b></td>
-        <td class="result"><b>Mobile</b></td>
-        <td class="result"><b>Home</b></td>
-        <td class="result"><b>Work</b></td>
-      </tr>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Last</td>
+          <th>First</td>
+          <th>Address</td>
+          <th>City</td>
+          <th>State</td>
+          <th>Zip</td>
+          <th>Mobile</td>
+          <th>Home</td>
+          <th>Work</td>
+        </tr>
+      </thhead>
       <% results.each do |result| %>
-      <tr>
-        <% first = result["fname"] %>
-        <% first.include? " " ? fname = first.gsub(" ", "%20") : fname = first %>
-        <% last = result["lname"] %>
-        <% last.include? " " ? lname = last.gsub(" ", "%20") : lname = last %>
-        <% url = "/get_update?fname=" + fname + "&lname=" + lname %>
-        <td class="result"><a href=<%= url %>><%= result["lname"] %></a></td>
-        <td class="result"><%= result["fname"] %></td>
-        <td class="result"><%= result["addr"] %></td>
-        <td class="result"><%= result["city"] %></td>
-        <td class="result"><%= result["state"] %></td>
-        <td class="result"><%= result["zip"] %></td>
-        <% unless result["mobile"].length == 0 %>
-          <% m_format = "(" + result["mobile"][0, 3] + ") " + result["mobile"][3, 3] + "-" + result["mobile"][6, 4] %>
-        <% else %>
-          <% m_format = "" %>
-        <% end %>
-        <td class="result"><%= m_format %></td>
-        <% h_format = "(" + result["home"][0, 3] + ") " + result["home"][3, 3] + "-" + result["home"][6, 4] %>
-        <td class="result"><%= h_format %></td>
-        <% unless result["work"].length == 0 %>
-          <% w_format = "(" + result["work"][0, 3] + ") " + result["work"][3, 3] + "-" + result["work"][6, 4] %>
-        <% else %>
-          <% w_format = "" %>
-        <% end %>
-        <td class="result"><%= w_format %></td>
-      </tr>
+      <tbody data-link="row" class="rowlink">
+        <tr>
+          <% first = result["fname"] %>
+          <% first.include? " " ? fname = first.gsub(" ", "%20") : fname = first %>
+          <% last = result["lname"] %>
+          <% last.include? " " ? lname = last.gsub(" ", "%20") : lname = last %>
+          <% url = "/get_update?fname=" + fname + "&lname=" + lname %>
+          <td><a href=<%= url %>><%= result["lname"] %></a></td>
+          <td><%= result["fname"] %></td>
+          <td><%= result["addr"] %></td>
+          <td><%= result["city"] %></td>
+          <td><%= result["state"] %></td>
+          <td><%= result["zip"] %></td>
+          <% unless result["mobile"].length == 0 %>
+            <% m_format = "(" + result["mobile"][0, 3] + ") " + result["mobile"][3, 3] + "-" + result["mobile"][6, 4] %>
+          <% else %>
+            <% m_format = "" %>
+          <% end %>
+          <td><%= m_format %></td>
+          <% h_format = "(" + result["home"][0, 3] + ") " + result["home"][3, 3] + "-" + result["home"][6, 4] %>
+          <td><%= h_format %></td>
+          <% unless result["work"].length == 0 %>
+            <% w_format = "(" + result["work"][0, 3] + ") " + result["work"][3, 3] + "-" + result["work"][6, 4] %>
+          <% else %>
+            <% w_format = "" %>
+          <% end %>
+          <td><%= w_format %></td>
+        </tr>
+      </tbody>
       <% end %>
     </table>
   </div>
 
-  <hr>
-
 </div>
+
+<div class="col-sm-3"></div>  <!-- for centering main div -->

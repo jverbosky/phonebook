@@ -1,4 +1,4 @@
-<!-- format phone numbers -->
+<!-- begin format phone numbers -->
 
 <% unless entry_hash["mobile"].length == 0 %>
   <% m_format = "(" + entry_hash["mobile"][0, 3] + ") " + entry_hash["mobile"][3, 3] + "-" + entry_hash["mobile"][6, 4] %>
@@ -14,14 +14,18 @@
   <% w_format = "" %>
 <% end %>
 
-<div>
+<!-- end format phone numbers -->
+
+<div class="col-sm-4"></div>  <!-- for centering main div -->
+
+<div class="col-sm-4">
 
   <div>
-    <h4>Here are the details for <%= entry_hash["fname"] %> <%= entry_hash["lname"] %>:</h4>
+    <h4>Details for <%= entry_hash["fname"] %> <%= entry_hash["lname"] %></h4>
   </div>
 
   <div class="padding">
-    <table>
+    <table class="table">
       <tr>
         <td class="medium"><b>First Name: </b></td>
         <td class="wide"><%= entry_hash["fname"] %></td>
@@ -61,17 +65,25 @@
     </table>
   </div>
 
-  <hr>
-
-  <div>
-    <h4>What would you like to do next?</h4>
-    <div class="padding">
-      <p><a href = "/get_entry">Create a new entry</a></p>
-      <p><a href = "/list_entries">View a listing of existing entries</a></p>
-      <p><a href = "/get_search">Update or delete an existing entry</a></p>
+  <div class="center-block">
+    <div class="padding col-sm-12">
+      <form  method="post" action="verify_delete">
+        <input type="hidden" name="entry[id]" value="<%= entry_hash["id"] %>">
+        <input type="hidden" name="entry[fname]" value="<%= entry_hash["fname"] %>">
+        <input type="hidden" name="entry[lname]" value="<%= entry_hash["lname"] %>">
+        <div class="text-center">
+          <% fname = entry_hash["fname"] %>
+          <% fname.include? " " ? furl = fname.gsub(" ", "%20") : furl = fname %>
+          <% lname = entry_hash["lname"] %>
+          <% lname.include? " " ? lurl = lname.gsub(" ", "%20") : lurl = lname %>
+          <% url = "/get_update?fname=" + furl + "&lname=" + lurl %>
+          <a href=<%= url %> class="btn btn-default" role="button">Update</a>
+          <button class="btn btn-default" type="submit">Delete</button>
+        </div>
+      </form>
     </div>
   </div>
 
-  <hr>
-
 </div>
+
+<div class="col-sm-4"></div>  <!-- for centering main div -->

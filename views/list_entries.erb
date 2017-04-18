@@ -1,12 +1,14 @@
-<div>
+<div class="col-sm-3"></div>  <!-- for centering main div -->
+
+<div class="col-sm-6">
 
   <div>
-    <h4>Select a name to view the entry for that person:</h4>
+    <h4>Select a name to view the corresponding entry</h4>
   </div>
 
   <div class="padding">
     <!-- dynamic table to list all users in personal_details.db -->
-    <table>
+    <table class="table table-bordered table-responsive">
       <% names.each_slice(3).to_a.each do |group| %>
         <tr>
         <% group.each do |person| %>
@@ -17,13 +19,13 @@
             <% lname.include? " " ? lurl = lname.gsub(" ", "%20") : lurl = lname %>
             <% url = "/entry_info?fname=" + furl + "&lname=" + lurl %>
           <% end %>
-          <td class="medium"><a href=<%= url %>><%= person %></a></td>
+          <td><a href=<%= url %>><%= person %></a></td>
         <% end %>
         </tr>
       <% end %>
     </table>
   </div>
 
-  <hr>
-
 </div>
+
+<div class="col-sm-3"></div>  <!-- for centering main div -->

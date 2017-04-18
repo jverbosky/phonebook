@@ -1,4 +1,4 @@
-<!-- format phone numbers -->
+<!-- begin format phone numbers -->
 
 <% unless entry_hash["mobile"].length == 0 %>
   <% m_format = "(" + entry_hash["mobile"][0, 3] + ") " + entry_hash["mobile"][3, 3] + "-" + entry_hash["mobile"][6, 4] %>
@@ -14,7 +14,11 @@
   <% w_format = "" %>
 <% end %>
 
-<div>
+<!-- end format phone numbers -->
+
+<div class="col-sm-4"></div>  <!-- for centering main div -->
+
+<div class="col-sm-4">
 
   <% if entry_hash.key?("id") %>
     <h4>Details for <%= entry_hash["fname"] %> <%= entry_hash["lname"] %> have been updated!</h4>
@@ -22,10 +26,8 @@
     <h4>Details for <%= entry_hash["fname"] %> <%= entry_hash["lname"] %> have been added!</h4>
   <% end %>
 
-  <hr>
-
   <div class="padding">
-    <table>
+    <table class="table">
       <tr>
         <td class="result"><p><b>Name: </b></p></td>
         <td class="padding-td"><p><%= entry_hash["lname"] %>, <%= entry_hash["fname"] %></p></td>
@@ -49,17 +51,6 @@
     </table>
   </div>
 
-  <hr>
-
-  <div>
-    <h4>What would you like to do next?</h4>
-    <div class="padding">
-      <p><a href = "/get_entry">Create a new entry</a></p>
-      <p><a href = "/list_entries">View a listing of existing entries</a></p>
-      <p><a href = "/get_search">Update or delete an existing entry</a></p>
-    </div>
-  </div>
-
-  <hr>
-
 </div>
+
+<div class="col-sm-4"></div>  <!-- for centering main div -->
