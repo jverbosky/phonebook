@@ -56,9 +56,7 @@ class TestPhonebookOps < Minitest::Test
   def test_7_verify_get_names_from_db
     user_array = get_names()
     names = [["Doe, Jen", "Fairbanks Jr., Jim Bob", "Smith, Joy", "Doe, Jill", "Langer, Jeff", "Smith-Lewis, June", "Doe, John", "Scott M.D., Jack", "", "Doe III, Joe", "Smith, Jane C.", ""],
-             ["Doe, Jen", "Fairbanks Jr., Jim Bob", "Smith, Jane C.", "Doe, Jill", "Langer, Jeff", "Smith, Joy", "Doe, John", "Roberts, Jake", "Smith-Lewis, June", "Doe III, Joe", "Scott M.D., Jack", ""],
-             ["Doe, Jen", "Fairbanks Jr., Jim Bob", "Smith, Jane C.", "Doe, Jill", "Langer, Jeff", "Smith, Joy", "Doe, John", "Robertson, Jake", "Smith-Lewis, June", "Doe III, Joe", "Scott M.D., Jack", ""],
-             ["Doe, Jen", "Fairbanks Jr., Jim Bob", "Scott M.D., Jack", "Doe, Jill", "Langer, Jeff", "Smith, Jane C.", "Doe, John", "Roberts, Jake", "Smith, Joy", "Doe III, Joe", "Robertson, Jake", "Smith-Lewis, June"]]
+             ["Doe, Jen", "Fairbanks Jr., Jim Bob", "Smith, Jane C.", "Doe, Jill", "Langer, Jeff", "Smith, Joy", "Doe, John", "Roberts, Jake", "Smith-Lewis, June", "Doe III, Joe", "Scott M.D., Jack", ""]]
     result = names.include? user_array
     assert_equal(true, result)
   end
@@ -427,8 +425,8 @@ class TestPhonebookOps < Minitest::Test
   end
 
   def test_65_verify_resulting_hash_for_write_db_empty_work_phone
-    formatted = {"fname"=>"Jake", "lname"=>"Roberts", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>""}
-    entry_hash = {"fname"=>"jake", "lname"=>"roberts", "addr"=>"328 oakdale drive", "city"=>"pittsburgh", "state"=>"pa", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>""}
+    formatted = {"fname"=>"Jake", "lname"=>"Roberts", "addr"=>"328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
+    entry_hash = {"fname"=>"jake", "lname"=>"roberts", "addr"=>"328 oakdale drive", "city"=>"pittsburgh", "state"=>"pa", "zip"=>"15213", "mobile"=>"4125557359", "home"=>"4125558349", "work"=>"4125556843"}
     result = write_db(entry_hash)
     assert_equal(formatted, result)
   end
@@ -505,9 +503,9 @@ class TestPhonebookOps < Minitest::Test
   end
 
   def test_76_verify_resulting_hash_for_update_record_empty_mobile
-    formatted = {"fname"=>"Jake", "lname"=>"Robertson", "addr"=>"1328 Oakdale Drive", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15213", "mobile"=>"", "home"=>"4125558349", "work"=>"4125556843"}
-    entry_hash = {"fname"=>"jake", "lname"=>"robertson", "addr"=>"1328 oakdale drive", "city"=>"pittsburgh", "state"=>"pa", "zip"=>"15213", "mobile"=>"", "home"=>"4125558349", "work"=>"4125556843"}
-    result = write_db(entry_hash)
+    formatted = {"id"=>"6", "fname"=>"Jen", "lname"=>"Doe", "addr"=>"3261 Michigan Avenue", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15222", "mobile"=>"", "home"=>"7245550624", "work"=>"7245551234"}
+    entry_hash = {"id"=>"6", "fname"=>"jen", "lname"=>"doe", "addr"=>"3261 michigan avenue", "city"=>"pittsburgh", "state"=>"pa", "zip"=>"15222", "mobile"=>"", "home"=>"7245550624", "work"=>"7245551234"}
+    result = update_values(entry_hash)
     assert_equal(formatted, result)
   end
 
