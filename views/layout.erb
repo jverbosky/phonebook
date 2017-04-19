@@ -14,6 +14,7 @@
 
     <nav class="navbar navbar-default" role="navigation">
       <div class="container-fluid">
+
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
@@ -31,8 +32,10 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
           <ul class="nav navbar-nav">
-            <li><a href="/get_entry">New Entry</a></li>
-            <li><a href="/list_entries">List Entries</a></li>
+            <!-- <li><a href="/get_entry">New Entry</a></li> -->
+            <li><a href="/get_entry"><i class="glyphicon glyphicon-plus"></i> New</a></li>
+            <li><a href="/list_entries"><i class="glyphicon glyphicon-th-list"></i> List</a></li>
+            <li><a href="https://www.linkedin.com/in/johnverbosky" target="_blank"><i class="glyphicon glyphicon-info-sign"></i> About</a></li>
           </ul>
 
           <form class="navbar-form navbar-right" role="search" method="post" action="search_results">
@@ -54,13 +57,11 @@
           </form>
 
         </div><!-- /.navbar-collapse -->
+
       </div><!-- /.container-fluid -->
     </nav>
 
-
     <div class="container-fluid">
-<!--         <a href="https://www.linkedin.com/in/johnverbosky" target="_blank"><h1>Phonebook</h1></a>
-      <hr> -->
       <%= yield %>
     </div><!-- /.container-fluid -->
 

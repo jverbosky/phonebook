@@ -35,6 +35,15 @@ hr {
   margin-bottom: 5px;
 }
 
+p.indent {
+  padding-left: 1.8em
+}
+
+.faq {
+  font-size: 18px;
+  font-style: italic;
+}
+
 table {
   outline: 1px solid #000000;
   width: 100%;
@@ -94,11 +103,6 @@ tr:nth-child(odd) {
   padding: 8px;
 }
 
-/*.result {
-  vertical-align: top;
-  padding: 8px;
-}*/
-
 .navbar {
   background-color: #ffff00;
 }
@@ -128,6 +132,10 @@ tr:nth-child(odd) {
     border: 1px solid #ffff00;
 }
 
+.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+    border-top: 1px solid #ffff00;
+}
+
 .table>tbody+tbody {
     border-top: 2px solid #ffff00;
 }
@@ -140,14 +148,7 @@ tr:nth-child(odd) {
     border: 1px solid #ffff00;
 }
 
-.red {
-  background-color: red;
-}
-
-.blue {
-  background-color: blue;
-}
-
-.green {
-  background-color: green;
+.list-group-item {
+    border-color: #ffff00;
+    background-color: #fff791;
 }
