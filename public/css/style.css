@@ -44,6 +44,10 @@ p.indent {
   font-style: italic;
 }
 
+a {
+  color: #000000;
+}
+
 table {
   outline: 1px solid #000000;
   width: 100%;
