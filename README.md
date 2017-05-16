@@ -185,7 +185,7 @@ Please refer to the following sections for details on how to run the unit tests 
 
 ----------
 
-Tests have been developed to verify that the methods in each class file are working as intended.  All tests are located in the **/tests** directory.
+Tests have been developed to verify that the methods used by the app are working as intended.  All tests are located in the **/tests** directory.
 
 Unit Tests:
 
