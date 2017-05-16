@@ -208,7 +208,7 @@ In order to connect to the database and prepare the database, the unit test vers
 
 Once the correct "load local_env.rb" statement is available, unit tests can be run by doing the following:
 
-1. Navigate to the **/tests** directory in a terminal (command prompt) session
+1. Navigate to the **/tests** directory in a terminal (command prompt) session.
 2. Run the following command for the unit test file:<br>
 
     ruby test\_phonebook_ops.rb
