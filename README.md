@@ -177,7 +177,7 @@ To update the details for an entry in the phonebook, do the following:
 ----------
 ## Tests ##
 
-Please refer to the following sections for details on how to run the unit and front-end tests for the web app.
+Please refer to the following sections for details on how to run the unit tests for the web app.
 
 ----------
 
