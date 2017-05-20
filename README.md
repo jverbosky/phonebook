@@ -12,13 +12,23 @@ Highlights include:
 
 ----------
 
-## Preliminaries ##
+## Running the App ##
 
-**Database Setup**
+To open a Heroku-hosted instance of the phonebook app from any Internet-connected device, use the following URL:
 
-This application was developed to use an AWS-hosted PostgreSQL database.  However, the original database was taken offline due to AWS free-tier limits.
+[https://phonebook-jv.herokuapp.com/](https://phonebook-jv.herokuapp.com/)
 
-That being said, there are two Ruby programs in place to build and seed the database tables required by this web app.  To accomplish this, do the following:
+----------
+
+**Running the App Locally**
+
+----------
+
+**Preliminary Database Setup**
+
+The phonebook app was developed to use an AWS-hosted PostgreSQL database.
+
+However, if you would like to run the app locally, there are two Ruby programs in place to build and seed the required database tables.  To accomplish this, do the following:
 
 1. Make sure the '[pg](https://github.com/ged/ruby-pg)' Ruby gem is installed.
 2. Create an AWS-hosted PostgreSQL database instance through [RDS](https://us-west-2.console.aws.amazon.com/rds/home?region=us-west-2#).
@@ -46,9 +56,7 @@ That being said, there are two Ruby programs in place to build and seed the data
 
 ----------
 
-**Running the App**
-
-To run the phonebook app locally:
+Once a database is available, you can run the app locally by doing the following:
 
 1. Make sure that [Ruby](https://www.ruby-lang.org/en/documentation/installation/) is installed.
 2. Make sure that the [Sinatra](https://github.com/sinatra/sinatra) gem is installed.  *Note that installing the Sinatra gem will install other gems necessary to run the game locally, such as rack.*
