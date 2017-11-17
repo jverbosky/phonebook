@@ -25,12 +25,9 @@ end
 def get_entry(first_name, last_name)
   begin
     conn = open_db()
-    conn.prepare('q_statement',
-                 "select *
-                  from listings
-                  where fname = '#{first_name}'
-                  and lname = '#{last_name}'")
-    user_hash = conn.exec_prepared('q_statement')
+    query = "select * from listings where fname = $1 and lname = $2"
+    conn.prepare('q_statement', query)
+    user_hash = conn.exec_prepared('q_statement', [first_name, last_name])
     conn.exec("deallocate q_statement")
     user_hash.to_a.size > 0 ? (return user_hash[0]) : (return {})
   rescue PG::Error => e
@@ -56,8 +53,8 @@ def get_names()
   names = []  # array to hold names
   begin
     conn = open_db()
-    conn.prepare('q_statement',
-                 "select fname, lname from listings order by lname, fname")
+    query = "select fname, lname from listings order by lname, fname"
+    conn.prepare('q_statement', query)
     query = conn.exec_prepared('q_statement')
     conn.exec("deallocate q_statement")
   rescue PG::Error => e
