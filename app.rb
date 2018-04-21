@@ -1,5 +1,5 @@
 require 'sinatra'
-require 'pg'
+require 'mysql2'
 require_relative './methods/phonebook_ops.rb'
 
 class PhonebookApp < Sinatra::Base

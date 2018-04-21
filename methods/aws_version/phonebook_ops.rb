@@ -1,21 +1,22 @@
-require 'mysql2'
-# require 'pp'
-load "./methods/local_env.rb" if File.exists?("./methods/local_env.rb")  # production version
+require 'pg'
+require 'pp'
+# load "./methods/local_env.rb" if File.exists?("./methods/local_env.rb")  # production version
 # load "../methods/local_env.rb" if File.exists?("../methods/local_env.rb")  # unit test & local version
-# load "./local_env.rb" if File.exists?("./local_env.rb")  # local version (if previous doesn't work)
+load "./local_env.rb" if File.exists?("./local_env.rb")  # local version (if previous doesn't work)
 
-# Method to open a connection to the MySQL database
+# Method to open a connection to the PostgreSQL database
 def open_db()
   begin
+    # connect to the database
     db_params = {
-        host: ENV['host'],  # AWS link
-        port: ENV['port'],  # AWS port, always 5432
-        username: ENV['username'],
-        password: ENV['password'],
-        database: ENV['database']
-    }
-    client = Mysql2::Client.new(db_params)
-  rescue Mysql2::Error => e
+          host: ENV['host'],  # AWS link
+          port:ENV['port'],  # AWS port, always 5432
+          dbname:ENV['dbname'],
+          user:ENV['dbuser'],
+          password:ENV['dbpassword']
+        }
+    conn = PG::Connection.new(db_params)
+  rescue PG::Error => e
     puts 'Exception occurred'
     puts e.message
   end
@@ -24,21 +25,21 @@ end
 # Method to return entry hash from PostgreSQL db for specified name
 def get_entry(first_name, last_name)
   begin
-    client = open_db()
-    statement = client.prepare("select * from listings where fname = ? and lname = ?")
-    user_hash = statement.execute(first_name, last_name)
-    user_hash.to_a.size > 0 ? (return user_hash.to_a[0]) : (return {})
-  rescue Mysql2::Error => e
+    conn = open_db()
+    query = "select * from listings where fname = $1 and lname = $2"
+    conn.prepare('q_statement', query)
+    user_hash = conn.exec_prepared('q_statement', [first_name, last_name])
+    conn.exec("deallocate q_statement")
+    user_hash.to_a.size > 0 ? (return user_hash[0]) : (return {})
+  rescue PG::Error => e
     puts 'Exception occurred'
     puts e.message
   ensure
-    client.close if client
+    conn.close if conn
   end
 end
 
 # puts get_entry("John", "Doe")
-# {"id"=>1, "fname"=>"John", "lname"=>"Doe", "addr"=>"606 Jacobs Street", "city"=>"Pittsburgh", "state"=>"PA", "zip"=>"15220", "mobile"=>"4125550125", "home"=>"4125559816", "work"=>"4125550106"}
-
 
 # Method to rearrange names for (top > down) then (left > right) column population
 def rotate_names(names)
@@ -54,13 +55,16 @@ end
 def get_names()
   names = []  # array to hold names
   begin
-    client = open_db()
-    query = client.query("select fname, lname from listings order by lname, fname")
-  rescue Mysql2::Error => e
+    conn = open_db()
+    query = "select fname, lname from listings order by lname, fname"
+    conn.prepare('q_statement', query)
+    query = conn.exec_prepared('q_statement')
+    conn.exec("deallocate q_statement")
+  rescue PG::Error => e
     puts 'Exception occurred'
     puts e.message
   ensure
-    client.close if client
+    conn.close if conn
   end
   query.each { |pair| names.push(pair["lname"] + ", " + pair["fname"]) }
   names
@@ -68,7 +72,6 @@ def get_names()
 end
 
 # pp get_names()
-
 
 # Method to hold state appreviations
 def state_array
@@ -187,17 +190,19 @@ def write_db(entry_hash)
   v_home = formatted["home"]
   v_work = formatted["work"]
   begin
-    client = open_db() # open database for updating
-    statement = client.prepare(
-      "insert into listings (fname, lname, addr, city, state, zip, mobile, home, work)
-       values (?, ?, ?, ?, ?, ?, ?, ?, ?)"
-    )
-    statement.execute(v_fname, v_lname, v_addr, v_city, v_state, v_zip, v_mobile, v_home, v_work)
-  rescue Mysql2::Error => e
+    conn = open_db() # open database for updating
+    max_id = conn.exec("select max(id) from listings")[0]  # determine current max index (id) in details table
+    max_id["max"] == nil ? v_id = 1 : v_id = max_id["max"].to_i + 1  # set index variable based on current max index value
+    conn.prepare('q_statement',
+                 "insert into listings (id, fname, lname, addr, city, state, zip, mobile, home, work)
+                  values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)")  # bind parameters
+    conn.exec_prepared('q_statement', [v_id, v_fname, v_lname, v_addr, v_city, v_state, v_zip, v_mobile, v_home, v_work])
+    conn.exec("deallocate q_statement")
+  rescue PG::Error => e
     puts 'Exception occurred'
     puts e.message
   ensure
-    client.close if client
+    conn.close if conn
   end
   return formatted
 end
@@ -205,34 +210,33 @@ end
 # user_hash = {"fname"=>"Test", "lname"=>"User", "addr"=>"123 Some Street", "city"=>"Somewhere", "state"=>"PA", "zip"=>"15123", "mobile"=>"4125551234", "home"=>"4125552345", "work"=>"4125553456"}
 # p write_db(user_hash)
 
-
 # Method to return array of record hashes associated with specified value and column
 def pull_records(search_array)
   value = search_array["value"]
   column = search_array["column"]
   results = []  # array to hold all matching hashes
   begin
-    client = open_db()
+    conn = open_db()
     unless value == ""
-      statement = client.prepare(
-        "select * from listings
-         where " + column + " like ?
-         order by lname, fname"
-      )
-      value = "%" + value + "%"
-      rs = statement.execute(value)
+      query = "select *
+               from listings
+               where " + column + " ilike $1
+               order by lname, fname"
+      conn.prepare('q_statement', query)
+      rs = conn.exec_prepared('q_statement', ["%" + value + "%"])
     else
-      rs = client.query(
-        "select * from listings
-         where " + column + " = ''"
-      )
+      query = "select *
+               from listings
+               where " + column + " = ''"
+      conn.prepare('q_statement', query)
+      rs = conn.exec_prepared('q_statement')
     end
-    # conn.exec("deallocate q_statement")
-  rescue Mysql2::Error => e
+    conn.exec("deallocate q_statement")
+  rescue PG::Error => e
     puts 'Exception occurred'
     puts e.message
   ensure
-    client.close if client
+    conn.close if conn
   end
   rs.each { |result| results.push(result) }
   results == [] ? [{"addr" => "No matching record - please try again."}] : results
@@ -243,6 +247,7 @@ end
 # pp pull_records(search_array)
 
 
+
 # Method to update any number of values in any number of tables
 # - entry hash needs to contain id of current record that needs to be updated
 # - order is not important (the id can be anywhere in the hash)
@@ -250,21 +255,20 @@ def update_values(entry_hash)
   id = entry_hash["id"]  # determine the id for the current record
   formatted = format_hash(entry_hash)
   begin
-    client = open_db() # open database for updating
+    conn = open_db() # open database for updating
     formatted.each do |column, value|  # iterate through entry_hash for each column/value pair
       unless column == "id"  # we do NOT want to update the id
-
-        statement = client.prepare(
-          "update listings set " + column + " = ? where id = ?"
-        )
-        statement.execute(value, id)
+        query = "update listings set " + column + " = $2 where id = $1"  # can't use column name as bind parameter
+        conn.prepare('q_statement', query)
+        rs = conn.exec_prepared('q_statement', [id, value])
+        conn.exec("deallocate q_statement")
       end
     end
-  rescue Mysql2::Error => e
+  rescue PG::Error => e
     puts 'Exception occurred'
     puts e.message
   ensure
-    client.close if client
+    conn.close if conn
   end
   return formatted
 end
@@ -277,17 +281,31 @@ end
 def delete_record(id_hash)
   id = id_hash["id"]  # determine the id for the current record
   begin
-    client = open_db() # open database for updating
-    statement = client.prepare("delete from listings where id = ?")
-    statement.execute(id)
-  rescue Mysql2::Error => e
+    conn = open_db() # open database for updating
+    query = "delete from listings where id = $1"
+    conn.prepare('q_statement', query)
+    rs = conn.exec_prepared('q_statement', [id])
+    conn.exec("deallocate q_statement")
+  rescue PG::Error => e
     puts 'Exception occurred'
     puts e.message
   ensure
-    client.close if client
+    conn.close if conn
   end
   return "Record successfully deleted!"
 end
 
-# id_hash = user_hash = {"id"=>"11"}
-# puts delete_record(id_hash)
+id_hash = user_hash = {"id"=>"11"}
+puts delete_record(id_hash)
+
+
+#-----------------
+# Sandbox testing
+#-----------------
+
+# run after unit tests, use DBeaver/PGAdmin to verify record deletion
+# id_hash_1 = {"id"=>"11"}
+# delete_record(id_hash_1)
+
+# id_hash_2 = {"id"=>"12"}
+# delete_record(id_hash_2)
