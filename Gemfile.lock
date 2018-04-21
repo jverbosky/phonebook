@@ -2,7 +2,7 @@ GEM
   remote: http://rubygems.org/
   specs:
     minitest (5.10.1)
-    pg (0.20.0-x86-mingw32)
+    mysql2 (0.5.1-x86-mingw32)
     rack (1.6.5)
     rack-protection (1.5.3)
       rack
@@ -19,7 +19,7 @@ PLATFORMS
 
 DEPENDENCIES
   minitest
-  pg
+  mysql2
   rack
   rack-test
   sinatra
@@ -28,4 +28,4 @@ RUBY VERSION
    ruby 2.3.3p222
 
 BUNDLED WITH
-   1.14.3
+   1.16.1
